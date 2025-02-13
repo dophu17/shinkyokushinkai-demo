@@ -10,6 +10,8 @@ import LayersIcon from '@mui/icons-material/Layers';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { useDemoRouter } from '@toolpad/core/internal';
+import LinkIcon from '@mui/icons-material/Link';
+import UserPage from './pages/UserPage';
 
 const NAVIGATION = [
   {
@@ -20,6 +22,23 @@ const NAVIGATION = [
     segment: 'dashboard',
     title: 'Dashboard',
     icon: <DashboardIcon />,
+  },
+  {
+    segment: 'users',
+    title: 'Users',
+    icon: <DashboardIcon />,
+  },
+  {
+    segment: 'link',
+    title: 'Link',
+    href: 'https://mui.com',
+    icon: <LinkIcon />,
+  },
+  {
+    segment: 'newpage',
+    title: 'New Page',
+    href: '/new-page',
+    icon: <LinkIcon />,
   },
   {
     segment: 'orders',
@@ -74,6 +93,10 @@ const demoTheme = createTheme({
 });
 
 function DemoPageContent({ pathname }) {
+  if (pathname === '/users') {
+    return <UserPage />;
+  }
+
   return (
     <Box
       sx={{
@@ -98,9 +121,20 @@ export default function DashboardLayoutBasic(props) {
   const { window } = props;
 
   const router = useDemoRouter('/dashboard');
+  console.log('router', router);
 
   // Remove this const when copying and pasting into your project.
   const demoWindow = window !== undefined ? window() : undefined;
+
+  const handleNavigation = (href) => {
+    if (href?.startsWith('http')) {
+      // Open external links in a new tab
+      window.open(href, '_blank');
+    } else if (href) {
+      // Handle internal navigation
+      router.push(href);
+    }
+  };
 
   return (
     // preview-start
@@ -109,6 +143,7 @@ export default function DashboardLayoutBasic(props) {
       router={router}
       theme={demoTheme}
       window={demoWindow}
+      onNavigate={handleNavigation}
     >
       <DashboardLayout>
         <DemoPageContent pathname={router.pathname} />
