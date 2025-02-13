@@ -11,5 +11,6 @@ Route::get('/user', function (Request $request) {
 Route::post('login', [UserController::class, 'login']);
 Route::post('register', [UserController::class, 'register']);
 Route::group(['middleware' => 'auth:api'], function() {
-    Route::post('details', [UserController::class, 'details']);
+    Route::get('details', [UserController::class, 'details']);
+    Route::get('list', [UserController::class, 'list']);
 });

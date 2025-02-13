@@ -96,4 +96,21 @@ class UserController extends Controller
             $this->successStatus
         );
     }
+
+    /**
+     * List all users
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function list()
+    {
+        $users = User::all();
+
+        return response()->json(
+            [
+                'success' => $users
+            ],
+            $this->successStatus
+        );
+    }
 }
