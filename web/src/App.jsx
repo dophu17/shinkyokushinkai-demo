@@ -11,6 +11,7 @@ import UserPage from './pages/UserPage';
 import NewsPage from './pages/NewsPage';
 import LoginPage from './pages/LoginPage';
 import { BrowserRouter, useNavigate, useLocation } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const NAVIGATION = [
   {
@@ -40,6 +41,12 @@ const NAVIGATION = [
     title: 'News',
     icon: <DescriptionIcon />,
     to: '/news'
+  },
+  {
+    segment: 'logout',
+    title: 'Logout',
+    icon: <LogoutIcon />,
+    to: '/logout'
   }
 ];
 
@@ -120,8 +127,18 @@ function AppContent() {
 
   const handleNavigation = React.useCallback((event) => {
     if (typeof event === 'string') {
+      if (event === '/logout') {
+        localStorage.removeItem('token');
+        navigate('/login');
+        return;
+      }
       navigate(event);
     } else if (event?.to) {
+      if (event.to === '/logout') {
+        localStorage.removeItem('token');
+        navigate('/login');
+        return;
+      }
       navigate(event.to);
     }
   }, [navigate]);
