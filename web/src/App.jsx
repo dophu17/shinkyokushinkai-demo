@@ -94,6 +94,7 @@ function DemoPageContent({ pathname }) {
 function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [navigation, setNavigation] = React.useState(NAVIGATION);
   
   React.useEffect(() => {
     const token = localStorage.getItem('token');
@@ -103,6 +104,18 @@ function AppContent() {
     } else if (!token && location.pathname !== '/login') {
       navigate('/login');
     }
+
+    // Filter navigation items based on token
+    const filteredNavigation = NAVIGATION.filter(item => {
+      if (token) {
+        // When logged in, show all items except login
+        return item.segment !== 'login';
+      } else {
+        // When not logged in, show only login
+        return item.segment === 'login' || item.kind === 'header';
+      }
+    });
+    setNavigation(filteredNavigation);
   }, [navigate, location]);
 
   const handleNavigation = React.useCallback((event) => {
@@ -115,7 +128,7 @@ function AppContent() {
 
   return (
     <AppProvider
-      navigation={NAVIGATION}
+      navigation={navigation}
       router={{
         pathname: location.pathname,
         navigate: handleNavigation
