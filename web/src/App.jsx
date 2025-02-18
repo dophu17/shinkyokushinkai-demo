@@ -12,6 +12,7 @@ import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { useDemoRouter } from '@toolpad/core/internal';
 import LinkIcon from '@mui/icons-material/Link';
 import UserPage from './pages/UserPage';
+import NewsPage from './pages/NewsPage';
 
 const NAVIGATION = [
   {
@@ -29,21 +30,9 @@ const NAVIGATION = [
     icon: <DashboardIcon />,
   },
   {
-    segment: 'link',
-    title: 'Link',
-    href: 'https://mui.com',
-    icon: <LinkIcon />,
-  },
-  {
-    segment: 'newpage',
-    title: 'New Page',
-    href: '/new-page',
-    icon: <LinkIcon />,
-  },
-  {
-    segment: 'orders',
-    title: 'Orders',
-    icon: <ShoppingCartIcon />,
+    segment: 'news',
+    title: 'News',
+    icon: <DescriptionIcon />,
   },
   {
     kind: 'divider',
@@ -95,6 +84,9 @@ const demoTheme = createTheme({
 function DemoPageContent({ pathname }) {
   if (pathname === '/users') {
     return <UserPage />;
+  }
+  if (pathname === '/news') {
+    return <NewsPage />;
   }
 
   return (
