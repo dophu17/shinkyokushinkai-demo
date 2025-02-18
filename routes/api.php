@@ -14,6 +14,5 @@ Route::post('register', [UserController::class, 'register']);
 Route::group(['middleware' => 'auth:api'], function() {
     Route::get('details', [UserController::class, 'details']);
     Route::get('list', [UserController::class, 'list']);
+    Route::apiResource('news', NewsController::class);
 });
-
-Route::apiResource('news', NewsController::class);
