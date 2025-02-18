@@ -105,9 +105,7 @@ class UserController extends Controller
         $users = User::all();
 
         return response()->json(
-            [
-                'success' => $users
-            ],
+            $users,
             $this->successStatus
         );
     }
