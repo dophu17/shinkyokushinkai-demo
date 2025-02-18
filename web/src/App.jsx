@@ -97,8 +97,11 @@ function AppContent() {
   
   React.useEffect(() => {
     const token = localStorage.getItem('token');
+    console.log('token', token);
     if (token && location.pathname === '/login') {
       navigate('/dashboard');
+    } else if (!token && location.pathname !== '/login') {
+      navigate('/login');
     }
   }, [navigate, location]);
 
