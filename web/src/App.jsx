@@ -3,16 +3,14 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { createTheme } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import BarChartIcon from '@mui/icons-material/BarChart';
 import DescriptionIcon from '@mui/icons-material/Description';
-import LayersIcon from '@mui/icons-material/Layers';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
-import { useDemoRouter } from '@toolpad/core/internal';
 import LinkIcon from '@mui/icons-material/Link';
 import UserPage from './pages/UserPage';
 import NewsPage from './pages/NewsPage';
+import LoginPage from './pages/LoginPage';
+import { BrowserRouter, useNavigate, useLocation } from 'react-router-dom';
 
 const NAVIGATION = [
   {
@@ -20,49 +18,29 @@ const NAVIGATION = [
     title: 'Main items',
   },
   {
+    segment: 'login',
+    title: 'Login',
+    icon: <LinkIcon />,
+    to: '/login'
+  },
+  {
     segment: 'dashboard',
     title: 'Dashboard',
     icon: <DashboardIcon />,
+    to: '/dashboard'
   },
   {
     segment: 'users',
     title: 'Users',
     icon: <DashboardIcon />,
+    to: '/users'
   },
   {
     segment: 'news',
     title: 'News',
     icon: <DescriptionIcon />,
-  },
-  {
-    kind: 'divider',
-  },
-  {
-    kind: 'header',
-    title: 'Analytics',
-  },
-  {
-    segment: 'reports',
-    title: 'Reports',
-    icon: <BarChartIcon />,
-    children: [
-      {
-        segment: 'sales',
-        title: 'Sales',
-        icon: <DescriptionIcon />,
-      },
-      {
-        segment: 'traffic',
-        title: 'Traffic',
-        icon: <DescriptionIcon />,
-      },
-    ],
-  },
-  {
-    segment: 'integrations',
-    title: 'Integrations',
-    icon: <LayersIcon />,
-  },
+    to: '/news'
+  }
 ];
 
 const demoTheme = createTheme({
@@ -82,11 +60,15 @@ const demoTheme = createTheme({
 });
 
 function DemoPageContent({ pathname }) {
+  console.log('pathname', pathname);
   if (pathname === '/users') {
     return <UserPage />;
   }
   if (pathname === '/news') {
     return <NewsPage />;
+  }
+  if (pathname === '/login') {
+    return <LoginPage />;
   }
 
   return (
@@ -109,38 +91,48 @@ function DemoPageContent({ pathname }) {
  * @property {function} [window] - Injected by the documentation to work in an iframe.
  */
 
-export default function DashboardLayoutBasic(props) {
-  const { window } = props;
-
-  const router = useDemoRouter('/dashboard');
-  console.log('router', router);
-
-  // Remove this const when copying and pasting into your project.
-  const demoWindow = window !== undefined ? window() : undefined;
-
-  const handleNavigation = (href) => {
-    if (href?.startsWith('http')) {
-      // Open external links in a new tab
-      window.open(href, '_blank');
-    } else if (href) {
-      // Handle internal navigation
-      router.push(href);
+function AppContent() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token && location.pathname === '/login') {
+      navigate('/dashboard');
     }
-  };
+  }, [navigate, location]);
+
+  const handleNavigation = React.useCallback((event) => {
+    if (typeof event === 'string') {
+      navigate(event);
+    } else if (event?.to) {
+      navigate(event.to);
+    }
+  }, [navigate]);
 
   return (
-    // preview-start
     <AppProvider
       navigation={NAVIGATION}
-      router={router}
+      router={{
+        pathname: location.pathname,
+        navigate: handleNavigation
+      }}
       theme={demoTheme}
-      window={demoWindow}
-      onNavigate={handleNavigation}
+      window={window}
     >
       <DashboardLayout>
-        <DemoPageContent pathname={router.pathname} />
+        <DemoPageContent pathname={location.pathname} />
       </DashboardLayout>
     </AppProvider>
-    // preview-end
   );
 }
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
+}
+
+export default App;

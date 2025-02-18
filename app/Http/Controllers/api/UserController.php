@@ -29,9 +29,7 @@ class UserController extends Controller
             $success['token'] = $user->createToken('MyApp')->accessToken;
 
             return response()->json(
-                [
-                    'success' => $success
-                ],
+                $success,
                 $this->successStatus
             );
         }

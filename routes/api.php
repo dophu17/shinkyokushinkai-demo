@@ -5,9 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\NewsController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:api');
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:api');
 
 Route::post('login', [UserController::class, 'login']);
 Route::post('register', [UserController::class, 'register']);
