@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -11,6 +15,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --slotHeight: 60px;
 }
 
 a {
@@ -66,3 +72,139 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.tournamentWrapper {
+  max-height: 55vh;
+  overflow: auto;
+}
+.tournamentBlockWrapper__even.tournamentBlockWrapper,
+.tournamentBlockWrapper__even .tournamentRoundWrapper {
+  flex-direction: row-reverse;
+}
+.blockWiner {
+  width: 100%;
+  min-width: 50px;
+  height: 50%;
+  margin-top: auto;
+  border-top: 2px solid #000;
+  border-right: 2px solid #000;
+}
+.blockWiner.tournamentBorder__RightNone {
+  border-right: none;
+}
+.tournamentBlockWrapper__65-128 .blockWiner {
+  margin-top: 0;
+  margin-bottom: auto;
+  transform: scale(1, -1);
+}
+.tournamentBlockWrapper__even.tournamentBlockWrapper__65-128 .blockWiner {
+  transform: scale(-1, -1);
+}
+
+.tournamentRound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  width: 50px;
+  /* position: relative;
+  left: 300%; */
+}
+
+.tournamentRoundWrapper {
+  /* overflow-x: auto; */
+  min-width: max-content;
+}
+
+.tournamentRoundWrapper > div:first-child {
+  width: 250px;
+  min-width: max-content;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.slotWrapper {
+  height: var(--slotHeight);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5rem;
+  gap: 1rem;
+}
+.slotWrapper > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
+.tournamentBorderWrapper {
+  display: flex;
+  flex-direction: column;
+  height: calc(var(--slotHeight) + 10px);
+  width: 100%;
+  margin: calc((var(--slotHeight) + 10px) / 2) 0;
+}
+
+.Round-2 .tournamentBorderWrapper {
+  height: calc((var(--slotHeight) + 10px) * 2);
+  margin: calc(var(--slotHeight) + 10px) 0;
+}
+.Round-3 .tournamentBorderWrapper {
+  height: calc((var(--slotHeight) + 10px) * 4);
+  margin: calc((var(--slotHeight) + 10px) * 2) 0;
+}
+.Round-4 .tournamentBorderWrapper {
+  height: calc((var(--slotHeight) + 10px) * 8);
+  margin: calc((var(--slotHeight) + 10px) * 4) 0;
+}
+.Round-5 .tournamentBorderWrapper {
+  height: calc((var(--slotHeight) + 10px) * 16);
+  margin: calc((var(--slotHeight) + 10px) * 8) 0;
+}
+
+.Round-6 .tournamentBorderWrapper {
+  height: calc((var(--slotHeight) + 10px) * 32);
+  margin: calc((var(--slotHeight) + 10px) * 16) 0;
+}
+
+.Round-7 .tournamentBorderWrapper {
+  height: calc((var(--slotHeight) + 10px) * 64);
+  margin: calc((var(--slotHeight) + 10px) * 32) 0;
+}
+
+.tournamentBlockWrapper__even .tournamentBorder {
+  transform: scale(-1, 1);
+}
+
+.tournamentBorderWrapper > div {
+  min-height: 10px;
+  height: 100%;
+}
+.tournamentBorder_top {
+  border-top: 2px solid #000;
+  border-right: 2px solid #000;
+}
+.tournamentBorder_buttom {
+  border-bottom: 2px solid #000;
+  border-right: 2px solid #000;
+}
+.tournamentBorder_center::before {
+  content: "";
+  height: 2px;
+  width: 100%;
+  background-color: #000;
+  position: absolute;
+  top: calc(50% - 1px);
+}
+.slotInfoWrap {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+}
+.slotInfoWrap p {
+  white-space: pre;
+}
+

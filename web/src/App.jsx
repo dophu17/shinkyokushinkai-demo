@@ -10,8 +10,9 @@ import LinkIcon from '@mui/icons-material/Link';
 import UserPage from './pages/UserPage';
 import NewsPage from './pages/NewsPage';
 import LoginPage from './pages/LoginPage';
-import { BrowserRouter, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, useNavigate, useLocation, Routes, Route } from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ViewItemPage from './pages/ViewItemPage';
 
 const NAVIGATION = [
   {
@@ -41,6 +42,12 @@ const NAVIGATION = [
     title: 'News',
     icon: <DescriptionIcon />,
     to: '/news'
+  },
+  {
+    segment: 'view-item',
+    title: 'View Item',
+    icon: <DescriptionIcon />,
+    to: '/view-item'
   },
   {
     segment: 'logout',
@@ -76,6 +83,9 @@ function DemoPageContent({ pathname }) {
   }
   if (pathname === '/login') {
     return <LoginPage />;
+  }
+  if (pathname === '/view-item') {
+    return <ViewItemPage />;
   }
 
   return (
