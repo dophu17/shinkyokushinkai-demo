@@ -51,7 +51,6 @@ const LoginPage = () => {
       }
 
       // Store the token in localStorage or your preferred storage method
-        console.log('data.token', data.token);
       localStorage.setItem('token', data.token);
       
       // Redirect to home page or dashboard
