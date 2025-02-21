@@ -4,5 +4,8 @@
 .team-box-8 {
     top: -7px;
 }
-
+.team-box-3,
+.team-box-7 {
+    top: 10px;
+}
 
