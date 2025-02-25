@@ -43,18 +43,97 @@ const TeamBox = styled(Paper, {
   backgroundColor: '#fff',
 }));
 
+const emptyTeam = {
+  name: 'Team empty', isWinner: false, points: 0, isEmptyTeam: true
+};
+
 const CompetePage = () => {
+  // Hàm để đảm bảo mỗi cặp đấu có 1 đội thắng
+  const ensureOneWinnerPerPair = (teams) => {
+    for (let i = 0; i < teams.length; i += 2) {
+      const team1 = teams[i];
+      const team2 = teams[i + 1];
+      
+      // Đảm bảo cả hai đội tồn tại
+      if (!team1 || !team2) {
+        if (team1) {
+          team1.isWinner = true;
+        }
+        if (team2) {
+          team2.isWinner = true;
+        }
+        continue;
+      }
+
+      // So sánh điểm và xác định đội thắng
+      if (team1.points > team2.points) {
+        team1.isWinner = true;
+        team2.isWinner = false;
+      } else if (team1.points < team2.points) {
+        team1.isWinner = false;
+        team2.isWinner = true;
+      } else {
+        // Nếu điểm bằng nhau, chọn đội đầu tiên thắng
+        team1.isWinner = true;
+        team2.isWinner = false;
+      }
+    }
+    return teams;
+  };
+
+  // Hàm để sắp xếp các đội, đảm bảo đội điểm 0 ở vị trí lẻ
+  const arrangeTeamsWithZeroPoints = (teams) => {
+    const zeroPointTeams = teams.filter(team => team.points === 0);
+    const nonZeroPointTeams = teams.filter(team => team.points > 0);
+    
+    // Sắp xếp các đội có điểm > 0 theo thứ tự điểm giảm dần
+    nonZeroPointTeams.sort((a, b) => b.points - a.points);
+    
+    const arrangedTeams = new Array(8);
+    let nonZeroIndex = 0;
+    let zeroIndex = 0;
+
+    // Đặt các đội vào vị trí thích hợp
+    for (let i = 0; i < 8; i++) {
+      if (i % 2 === 0) { // Vị trí chẵn (0, 2, 4, 6)
+        arrangedTeams[i] = nonZeroPointTeams[nonZeroIndex] || { ...emptyTeam, name: `Team empty ${i + 1}` };
+        nonZeroIndex++;
+      } else { // Vị trí lẻ (1, 3, 5, 7)
+        if (zeroIndex < zeroPointTeams.length) {
+          arrangedTeams[i] = zeroPointTeams[zeroIndex];
+          zeroIndex++;
+        } else {
+          // Nếu không còn đội điểm 0, sử dụng đội có điểm > 0 hoặc đội mặc định
+          arrangedTeams[i] = nonZeroPointTeams[nonZeroIndex] || { ...emptyTeam, name: `Team empty ${i + 1}` };
+          nonZeroIndex++;
+        }
+      }
+    }
+
+    return arrangedTeams;
+  };
+
+  // Cập nhật hàm ensureEightTeams để sử dụng arrangeTeamsWithZeroPoints
+  const ensureEightTeams = (teams) => {
+    const filledTeams = [...teams];
+    while (filledTeams.length < 8) {
+      filledTeams.push({ ...emptyTeam, name: `Team empty ${filledTeams.length + 1}` });
+    }
+    const arrangedTeams = arrangeTeamsWithZeroPoints(filledTeams);
+    return ensureOneWinnerPerPair(arrangedTeams);
+  };
+
   const teams = {
-    quarterFinals: [
+    quarterFinals: ensureEightTeams([
       { name: 'Team 1', isWinner: true, points: 10 },
-      { name: 'Team 2', isWinner: false, points: 8 },
+      // { name: 'Team 2', isWinner: false, points: 8 },
       { name: 'Team 3', isWinner: true, points: 5 },
-      { name: 'Team 4', isWinner: false, points: 4 },
-      { name: 'Team 5', isWinner: true, points: 7 },
+      // { name: 'Team 4', isWinner: false, points: 4 },
+      // { name: 'Team 5', isWinner: true, points: 7 },
       { name: 'Team 6', isWinner: false, points: 6 },
       { name: 'Team 7', isWinner: false, points: 8 },
       { name: 'Team 8', isWinner: true, points: 9 },
-    ],
+    ]),
     semiFinals: [
       { name: 'Team 1', isWinner: true, points: 9 },
       { name: 'Team 3', isWinner: false, points: 8 },
@@ -67,6 +146,8 @@ const CompetePage = () => {
     ],
     champion: { name: 'Team 1', points: 10 }
   };
+  console.log(teams.quarterFinals);
+  
   const quarterFinalsLeft = teams.quarterFinals.slice(0, 4);
   const quarterFinalsRight = teams.quarterFinals.slice(4, 8);
   const [selectedRound, setSelectedRound] = React.useState('quarterFinals');
@@ -108,7 +189,7 @@ const CompetePage = () => {
                   sx={{ position: 'relative', mb: index % 2 === 0 ? 3 : 0 }}
                 >
                   <TeamBox isWinner={team.isWinner}>
-                    {team.name}
+                    {team.isEmptyTeam ? '' : team.name}
                   </TeamBox>
                   {index % 2 === 0 && (
                     <>
@@ -233,7 +314,7 @@ const CompetePage = () => {
                   sx={{ position: 'relative', mb: index % 2 === 0 ? 3 : 0 }}
                 >
                   <TeamBox isWinner={team.isWinner}>
-                    {team.name}
+                    {team.isEmptyTeam ? '' : team.name}
                   </TeamBox>
                   {index % 2 === 0 && (
                     <>
@@ -378,7 +459,7 @@ const CompetePage = () => {
                     <TableCell component="th" scope="row">
                       {index + 1}
                     </TableCell>
-                    <TableCell>{team.name}</TableCell>
+                    <TableCell>{team.isEmptyTeam ? '' : team.name}</TableCell>
                     <TableCell align="right">{team.points}</TableCell>
                     <TableCell align="center">
                       <Box
