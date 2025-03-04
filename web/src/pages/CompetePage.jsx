@@ -1,16 +1,16 @@
-import { Box, Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Tab } from '@mui/material';
+import { Box, Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Tab, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import './CompetePage.css';
 import React from 'react';
 
 const BracketLine = styled('div', {
-  shouldForwardProp: prop => !['isWinner', 'points', 'typeLine', 'groupAlign'].includes(prop)
-})(({ theme, isWinner, points, typeLine, groupAlign }) => ({
+  shouldForwardProp: prop => !['isWinner', 'points', 'typeLine', 'groupAlign', 'status'].includes(prop)
+})(({ theme, isWinner, points, typeLine, groupAlign, status }) => ({
   width: '30px',
   height: '2px',
-  backgroundColor: isWinner ? theme.palette.primary.main : '#ccc',
+  backgroundColor: (isWinner && status !== 'fighting') ? theme.palette.primary.main : '#ccc',
   position: 'absolute',
-  '&::after': points ? {
+  '&::after': (points || points === 0) ? {
     content: `"${points}"`,
     position: 'absolute',
     ...(typeLine === 'top' ? {
@@ -28,18 +28,18 @@ const BracketLine = styled('div', {
     }),
     fontSize: '0.8rem',
     fontWeight: 'bold',
-    color: theme.palette.primary.main
+    color: (isWinner && status !== 'fighting') ? theme.palette.primary.main : '#ccc'
   } : {}
 }));
 
 const TeamBox = styled(Paper, {
-  shouldForwardProp: prop => prop !== 'isWinner'
-})(({ theme, isWinner }) => ({
+  shouldForwardProp: prop => !['isWinner', 'status'].includes(prop)
+})(({ theme, isWinner, status }) => ({
   padding: theme.spacing(1),
   width: '150px',
   height: '40px',
   textAlign: 'center',
-  border: isWinner ? `2px solid ${theme.palette.primary.main}` : '1px solid #ccc',
+  border: (isWinner && status !== 'fighting') ? `2px solid ${theme.palette.primary.main}` : '1px solid #ccc',
   backgroundColor: '#fff',
 }));
 
@@ -78,76 +78,145 @@ const CompetePage = () => {
         team2.isWinner = false;
       }
     }
+    console.log('teams', teams)
     return teams;
   };
 
-  // Hàm để sắp xếp các đội, đảm bảo đội điểm 0 ở vị trí lẻ
-  const arrangeTeamsWithZeroPoints = (teams) => {
-    const zeroPointTeams = teams.filter(team => team.points === 0);
-    const nonZeroPointTeams = teams.filter(team => team.points > 0);
-    
-    // Sắp xếp các đội có điểm > 0 theo thứ tự điểm giảm dần
-    nonZeroPointTeams.sort((a, b) => b.points - a.points);
-    
-    const arrangedTeams = new Array(8);
-    let nonZeroIndex = 0;
-    let zeroIndex = 0;
-
-    // Đặt các đội vào vị trí thích hợp
-    for (let i = 0; i < 8; i++) {
-      if (i % 2 === 0) { // Vị trí chẵn (0, 2, 4, 6)
-        arrangedTeams[i] = nonZeroPointTeams[nonZeroIndex] || { ...emptyTeam, name: `Team empty ${i + 1}` };
-        nonZeroIndex++;
-      } else { // Vị trí lẻ (1, 3, 5, 7)
-        if (zeroIndex < zeroPointTeams.length) {
-          arrangedTeams[i] = zeroPointTeams[zeroIndex];
-          zeroIndex++;
-        } else {
-          // Nếu không còn đội điểm 0, sử dụng đội có điểm > 0 hoặc đội mặc định
-          arrangedTeams[i] = nonZeroPointTeams[nonZeroIndex] || { ...emptyTeam, name: `Team empty ${i + 1}` };
-          nonZeroIndex++;
-        }
-      }
-    }
-
-    return arrangedTeams;
-  };
-
-  // Cập nhật hàm ensureEightTeams để sử dụng arrangeTeamsWithZeroPoints
+  // Cập nhật hàm ensureEightTeams để tự thêm đội trống
   const ensureEightTeams = (teams) => {
     const filledTeams = [...teams];
     while (filledTeams.length < 8) {
       filledTeams.push({ ...emptyTeam, name: `Team empty ${filledTeams.length + 1}` });
     }
-    const arrangedTeams = arrangeTeamsWithZeroPoints(filledTeams);
-    return ensureOneWinnerPerPair(arrangedTeams);
+    return ensureOneWinnerPerPair(filledTeams);
   };
 
-  const teams = {
-    quarterFinals: ensureEightTeams([
-      { name: 'Team 1', isWinner: true, points: 10 },
-      // { name: 'Team 2', isWinner: false, points: 8 },
-      { name: 'Team 3', isWinner: true, points: 5 },
-      // { name: 'Team 4', isWinner: false, points: 4 },
-      // { name: 'Team 5', isWinner: true, points: 7 },
-      { name: 'Team 6', isWinner: false, points: 6 },
-      { name: 'Team 7', isWinner: false, points: 8 },
-      { name: 'Team 8', isWinner: true, points: 9 },
-    ]),
-    semiFinals: [
-      { name: 'Team 1', isWinner: true, points: 9 },
-      { name: 'Team 3', isWinner: false, points: 8 },
-      { name: 'Team 5', isWinner: true, points: 10 },
-      { name: 'Team 8', isWinner: false, points: 5 },
-    ],
-    final: [
-      { name: 'Team 1', isWinner: true, points: 10 },
-      { name: 'Team 5', isWinner: false, points: 9 },
-    ],
-    champion: { name: 'Team 1', points: 10 }
+  // Add this new function
+  const determineRandomWinners = (teams) => {
+    const updatedTeams = teams.map(team => ({
+      ...team,
+      points: Math.floor(Math.random() * 10) + 1, // Random points between 1-10
+      status: 'finished'
+    }));
+    return ensureOneWinnerPerPair(updatedTeams);
   };
-  console.log(teams.quarterFinals);
-  
+
+  // Add states for tournament rounds
+  const [quarterFinalsTeams, setQuarterFinalsTeams] = React.useState(() => 
+    ensureEightTeams([
+      { name: 'Team 1', isWinner: false, points: null, status: 'fighting' },
+      { name: 'Team 2', isWinner: false, points: null, status: 'fighting' },
+      { name: 'Team 3', isWinner: false, points: null, status: 'fighting' },
+      { name: 'Team 4', isWinner: false, points: null, status: 'fighting' },
+      { name: 'Team 5', isWinner: false, points: null, status: 'fighting' },
+      { name: 'Team 6', isWinner: false, points: null, status: 'fighting' },
+      { name: 'Team 7', isWinner: false, points: null, status: 'fighting' },
+      { name: 'Team 8', isWinner: false, points: null, status: 'fighting' },
+    ])
+  );
+  const [semiFinals, setSemiFinals] = React.useState([]);
+  const [final, setFinal] = React.useState([]);
+  const [champion, setChampion] = React.useState({});
+
+  // Add function to regenerate tournament results
+  const regenerateTournament = () => {
+    // Generate semi-finals
+    const newSemiFinals = determineRandomWinners(
+      quarterFinalsTeams
+        .filter(team => team.isWinner && team.status === 'finished')
+        .map(team => ({
+          name: team.name,
+          isWinner: false,
+          points: null,
+          status: 'fighting'
+        }))
+    );
+    setSemiFinals(newSemiFinals);
+
+    // Generate finals
+    const newFinal = determineRandomWinners(
+      newSemiFinals
+        .filter(team => team.isWinner)
+        .map(team => ({
+          name: team.name,
+          isWinner: false,
+          points: null,
+          status: 'fighting'
+        }))
+    );
+    setFinal(newFinal);
+
+    // Set champion
+    setChampion(newFinal.find(team => team.isWinner) || {});
+  };
+
+  // Add this new function to handle randomizing semi-finals fights
+  const regenerateQuarterFinals = () => {
+    setQuarterFinalsTeams(ensureEightTeams(quarterFinalsTeams));
+    setSemiFinals([]);
+    setFinal([]);
+    setChampion({});
+  };
+
+  // Add this new function to handle randomizing semi-finals fights
+  const randomizeSemiFinalsFight = () => {
+    setQuarterFinalsTeams(determineRandomWinners(quarterFinalsTeams));
+    const newSemiFinals = (
+      quarterFinalsTeams
+        .filter(team => team.isWinner && team.status === 'finished')
+        .map(team => ({
+          name: team.name,
+          isWinner: false,
+          points: null,
+          status: 'fighting'
+        }))
+    );
+    setSemiFinals(newSemiFinals);
+    setFinal([]);
+    setChampion({});
+  };  
+
+  // Add this new function to handle randomizing final fights
+  const randomizeFinalFight = () => {
+    const newSemiFinals = determineRandomWinners(
+      quarterFinalsTeams
+        .filter(team => team.isWinner && team.status === 'finished')
+        .map(team => ({
+          name: team.name,
+          isWinner: false,
+          points: null,
+          status: 'fighting'
+        }))
+    );
+    console.log(newSemiFinals, 'newSemiFinals');
+    setSemiFinals(newSemiFinals);
+    const newFinal = (
+      newSemiFinals
+        .filter(team => team.isWinner && team.status === 'finished')
+        .map(team => ({
+          name: team.name,
+          isWinner: false,
+          points: null,
+          status: 'fighting'
+        }))
+    );
+    setFinal(newFinal);
+    setChampion({});
+  };
+
+  // Initialize tournament on first render
+  React.useEffect(() => {
+    // regenerateTournament();
+  }, []);
+
+  // Update teams object to use state values
+  const teams = {
+    quarterFinals: quarterFinalsTeams,
+    semiFinals,
+    final,
+    champion
+  };
+
   const quarterFinalsLeft = teams.quarterFinals.slice(0, 4);
   const quarterFinalsRight = teams.quarterFinals.slice(4, 8);
   const [selectedRound, setSelectedRound] = React.useState('quarterFinals');
@@ -173,6 +242,46 @@ const CompetePage = () => {
 
   return (
     <Box sx={{ p: 4, position: 'relative' }}>
+      {/* Add Regenerate button */}
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+        <Button 
+          variant="contained" 
+          onClick={regenerateQuarterFinals}
+          sx={{ mb: 2 }}
+        >
+          Regenerate Quarter Finals
+        </Button>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+        <Button 
+          variant="contained" 
+          onClick={randomizeSemiFinalsFight}
+          color="secondary"
+          sx={{ mb: 2 }}
+        >
+          Randomize Semi-Finals Fights
+        </Button>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+        <Button 
+          variant="contained" 
+          onClick={randomizeFinalFight}
+          color="secondary"
+          sx={{ mb: 2 }}
+        >
+          Randomize Final Fights
+        </Button>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+        <Button 
+          variant="contained" 
+          onClick={regenerateTournament}
+          sx={{ mb: 2 }}
+        >
+          Regenerate Tournament Results
+        </Button>
+      </Box>
+
       <Box className="tournament-bracket-container">
         <Typography variant="h4" sx={{ mb: 4, textAlign: 'center' }}>
           Tournament Bracket
@@ -188,23 +297,26 @@ const CompetePage = () => {
                   key={index} 
                   sx={{ position: 'relative', mb: index % 2 === 0 ? 3 : 0 }}
                 >
-                  <TeamBox isWinner={team.isWinner}>
+                  <TeamBox isWinner={team.isWinner} status={team.status}>
                     {team.isEmptyTeam ? '' : team.name}
                   </TeamBox>
                   {index % 2 === 0 && (
                     <>
                       <BracketLine 
                         isWinner={true}
+                        status={team.status}
                         sx={{ right: '-32px', top: '20px' }}
                         className={`bracket-line-horizontal-level-1-team-box-${index + 1}`}
                       />
                       <BracketLine 
                         isWinner={true}
+                        status={team.status}
                         sx={{ right: '-32px', top: '108px' }}
                         className={`bracket-line-horizontal-level-1-team-box-${index + 1}`}
                       />
                       <BracketLine 
                         isWinner={quarterFinalsLeft[index].isWinner}
+                        status={quarterFinalsLeft[index].status}
                         points={quarterFinalsLeft[index].points}
                         typeLine="top"
                         groupAlign="left"
@@ -218,6 +330,7 @@ const CompetePage = () => {
                       />
                       <BracketLine 
                         isWinner={quarterFinalsLeft[index + 1].isWinner}
+                        status={quarterFinalsLeft[index + 1].status}
                         points={quarterFinalsLeft[index + 1].points}
                         typeLine="bottom"
                         groupAlign="left"
@@ -234,6 +347,7 @@ const CompetePage = () => {
                         <>
                           <BracketLine 
                             isWinner={true}
+                            status={team.status}
                             sx={{ 
                               right: '-64px', 
                               top: '64px',
@@ -243,6 +357,7 @@ const CompetePage = () => {
                           />
                           <BracketLine 
                             isWinner={true}
+                            status={team.status}
                             sx={{ 
                               right: '-64px', 
                               top: '240px',
@@ -251,8 +366,9 @@ const CompetePage = () => {
                             className={`bracket-line-horizontal-level-2-team-box-${index + 1}`}
                           />
                           <BracketLine 
-                            isWinner={teams.semiFinals[0].isWinner}
-                            points={teams.semiFinals[0].points}
+                            isWinner={teams.semiFinals[0]?.isWinner}
+                            status={teams.semiFinals[0]?.status}
+                            points={teams.semiFinals[0]?.points}
                             typeLine="top"
                             groupAlign="left"
                             sx={{ 
@@ -264,8 +380,9 @@ const CompetePage = () => {
                             className={`bracket-line-vertical-level-2-team-box-${index + 1}-top`}
                           />
                           <BracketLine 
-                            isWinner={teams.semiFinals[1].isWinner}
-                            points={teams.semiFinals[1].points}
+                            isWinner={teams.semiFinals[1]?.isWinner}
+                            status={teams.semiFinals[1]?.status}
+                            points={teams.semiFinals[1]?.points}
                             typeLine="bottom"
                             groupAlign="left"
                             sx={{ 
@@ -277,8 +394,9 @@ const CompetePage = () => {
                             className={`bracket-line-vertical-level-2-team-box-${index + 1}-bottom`}
                           />
                           <BracketLine 
-                            isWinner={teams.final[0].isWinner}
-                            points={teams.final[0].points}
+                            isWinner={teams.final[0]?.isWinner}
+                            status={teams.final[0]?.status}
+                            points={teams.final[0]?.points}
                             typeLine="horizontal"
                             groupAlign="left"
                             sx={{ 
@@ -300,7 +418,7 @@ const CompetePage = () => {
           {/* Champion */}
           <Box sx={{ alignSelf: 'flex-start', mx: 4, mt: 16.5 }}>
             <TeamBox sx={{ backgroundColor: 'gold !important', position: 'relative', zIndex: 1 }}>
-              {teams.champion.name}
+              {teams.champion?.name}
             </TeamBox>
           </Box>
 
@@ -313,23 +431,26 @@ const CompetePage = () => {
                   key={index} 
                   sx={{ position: 'relative', mb: index % 2 === 0 ? 3 : 0 }}
                 >
-                  <TeamBox isWinner={team.isWinner}>
+                  <TeamBox isWinner={team.isWinner} status={team.status}>
                     {team.isEmptyTeam ? '' : team.name}
                   </TeamBox>
                   {index % 2 === 0 && (
                     <>
                       <BracketLine 
                         isWinner={true}
+                        status={team.status}
                         sx={{ left: '-32px', top: '20px' }}
                         className={`bracket-line-horizontal-level-1-team-box-${index + 1}`}
                       />
                       <BracketLine 
                         isWinner={true}
+                        status={team.status}
                         sx={{ left: '-32px', top: '108px' }}
                         className={`bracket-line-horizontal-level-1-team-box-${index + 1}`}
                       />
                       <BracketLine 
                         isWinner={quarterFinalsRight[index].isWinner}
+                        status={quarterFinalsRight[index].status}
                         points={quarterFinalsRight[index].points}
                         typeLine="top"
                         groupAlign="right"
@@ -343,6 +464,7 @@ const CompetePage = () => {
                       />
                       <BracketLine 
                         isWinner={quarterFinalsRight[index + 1].isWinner}
+                        status={quarterFinalsRight[index + 1].status}
                         points={quarterFinalsRight[index + 1].points}
                         typeLine="bottom"
                         groupAlign="right"
@@ -359,6 +481,7 @@ const CompetePage = () => {
                         <>
                           <BracketLine 
                             isWinner={true}
+                            status={team.status}
                             sx={{ 
                               left: '-64px', 
                               top: '64px',
@@ -368,6 +491,7 @@ const CompetePage = () => {
                           />
                           <BracketLine 
                             isWinner={true}
+                            status={team.status}
                             sx={{ 
                               left: '-64px', 
                               top: '240px',
@@ -376,8 +500,9 @@ const CompetePage = () => {
                             className={`bracket-line-horizontal-level-2-team-box-${index + 1}`}
                           />
                           <BracketLine 
-                            isWinner={teams.semiFinals[2].isWinner}
-                            points={teams.semiFinals[2].points}
+                            isWinner={teams.semiFinals[2]?.isWinner}
+                            status={teams.semiFinals[2]?.status}
+                            points={teams.semiFinals[2]?.points}
                             typeLine="top"
                             groupAlign="right"
                             sx={{ 
@@ -389,8 +514,9 @@ const CompetePage = () => {
                             className={`bracket-line-vertical-level-2-team-box-${index + 1}-top`}
                           />
                           <BracketLine 
-                            isWinner={teams.semiFinals[3].isWinner}
-                            points={teams.semiFinals[3].points}
+                            isWinner={teams.semiFinals[3]?.isWinner}
+                            status={teams.semiFinals[3]?.status}
+                            points={teams.semiFinals[3]?.points}
                             typeLine="bottom"
                             groupAlign="right"
                             sx={{ 
@@ -402,8 +528,9 @@ const CompetePage = () => {
                             className={`bracket-line-vertical-level-2-team-box-${index + 1}-bottom`}
                           />
                           <BracketLine 
-                            isWinner={teams.final[1].isWinner}
-                            points={teams.final[1].points}
+                            isWinner={teams.final[1]?.isWinner}
+                            status={teams.final[1]?.status}
+                            points={teams.final[1]?.points}
                             typeLine="horizontal"
                             groupAlign="right"
                             sx={{ 
@@ -459,12 +586,13 @@ const CompetePage = () => {
                     <TableCell component="th" scope="row">
                       {index + 1}
                     </TableCell>
-                    <TableCell>{team.isEmptyTeam ? '' : team.name}</TableCell>
-                    <TableCell align="right">{team.points}</TableCell>
+                    <TableCell>{team?.isEmptyTeam ? '' : team?.name}</TableCell>
+                    <TableCell align="right">{team?.points}</TableCell>
                     <TableCell align="center">
                       <Box
                         sx={{
                           backgroundColor: selectedRound === 'champion' ? 'gold' : 
+                            team.status === 'fighting' ? '#ff9800' :  // Orange color for fighting status
                             team.isWinner ? '#4caf50' : '#f44336',
                           color: 'white',
                           py: 0.5,
@@ -474,6 +602,7 @@ const CompetePage = () => {
                         }}
                       >
                         {selectedRound === 'champion' ? 'Champion' : 
+                          team.status === 'fighting' ? 'Fighting' :
                           team.isWinner ? 'Winner' : 'Eliminated'}
                       </Box>
                     </TableCell>
