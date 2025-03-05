@@ -47,6 +47,22 @@ const emptyTeam = {
   name: 'Team empty', isWinner: false, points: 0, isEmptyTeam: true
 };
 
+// status: fighting/finished
+// isWinner: true/false
+// points: number/null
+// branch: 1/2 (branch 1/branch 2)
+// competitorId: id
+const defaultTeams = [
+  { id: 1, name: 'Team 1', isWinner: false, points: null, status: 'fighting', branch: 1, competitorId: 6 },
+  { id: 2, name: 'Team 2', isWinner: false, points: null, status: 'fighting', branch: 1, competitorId: 5 },
+  { id: 3, name: 'Team 3', isWinner: false, points: null, status: 'fighting', branch: 2, competitorId: 7 },
+  { id: 4, name: 'Team 4', isWinner: false, points: null, status: 'fighting', branch: 2, competitorId: 8 },
+  { id: 5, name: 'Team 5', isWinner: false, points: null, status: 'fighting', branch: 1, competitorId: 2 },
+  { id: 6, name: 'Team 6', isWinner: false, points: null, status: 'fighting', branch: 1, competitorId: 1 },
+  { id: 7, name: 'Team 7', isWinner: false, points: null, status: 'fighting', branch: 2, competitorId: 3 },
+  { id: 8, name: 'Team 8', isWinner: false, points: null, status: 'fighting', branch: 2, competitorId: 4 },
+];
+
 const CompetePage = () => {
   // Hàm để đảm bảo mỗi cặp đấu có 1 đội thắng
   const ensureOneWinnerPerPair = (teams) => {
@@ -100,19 +116,42 @@ const CompetePage = () => {
     return ensureOneWinnerPerPair(updatedTeams);
   };
 
-  // Add states for tournament rounds
+  // Add new function to arrange teams based on id and competitorId
+  const arrangeTeamsByCompetitor = (teams) => {
+    const arrangedTeams = [];
+    const processedIds = new Set();
+
+    teams.forEach(team => {
+      // Skip if this team has already been processed
+      if (processedIds.has(team.id)) return;
+
+      // Find the matching competitor
+      const competitor = teams.find(t => t.id === team.competitorId);
+      if (competitor) {
+        arrangedTeams.push(team);
+        arrangedTeams.push(competitor);
+        processedIds.add(team.id);
+        processedIds.add(competitor.id);
+      }
+    });
+
+    return arrangedTeams;
+  };
+
+  // Update quarterFinalsTeams initialization
   const [quarterFinalsTeams, setQuarterFinalsTeams] = React.useState(() => 
-    ensureEightTeams([
-      { name: 'Team 1', isWinner: false, points: null, status: 'fighting' },
-      { name: 'Team 2', isWinner: false, points: null, status: 'fighting' },
-      { name: 'Team 3', isWinner: false, points: null, status: 'fighting' },
-      { name: 'Team 4', isWinner: false, points: null, status: 'fighting' },
-      { name: 'Team 5', isWinner: false, points: null, status: 'fighting' },
-      { name: 'Team 6', isWinner: false, points: null, status: 'fighting' },
-      { name: 'Team 7', isWinner: false, points: null, status: 'fighting' },
-      { name: 'Team 8', isWinner: false, points: null, status: 'fighting' },
-    ])
+    ensureEightTeams(arrangeTeamsByCompetitor(defaultTeams))
   );
+
+  // Add function to regenerate quarter finals with arranged teams
+  const regenerateQuarterFinals = () => {
+    setQuarterFinalsTeams(ensureEightTeams(arrangeTeamsByCompetitor(defaultTeams)));
+    setSemiFinals([]);
+    setFinal([]);
+    setChampion({});
+  };
+
+  // Add states for tournament rounds
   const [semiFinals, setSemiFinals] = React.useState([]);
   const [final, setFinal] = React.useState([]);
   const [champion, setChampion] = React.useState({});
@@ -147,14 +186,6 @@ const CompetePage = () => {
 
     // Set champion
     setChampion(newFinal.find(team => team.isWinner) || {});
-  };
-
-  // Add this new function to handle randomizing semi-finals fights
-  const regenerateQuarterFinals = () => {
-    setQuarterFinalsTeams(ensureEightTeams(quarterFinalsTeams));
-    setSemiFinals([]);
-    setFinal([]);
-    setChampion({});
   };
 
   // Add this new function to handle randomizing semi-finals fights
@@ -215,8 +246,8 @@ const CompetePage = () => {
     champion
   };
 
-  const quarterFinalsLeft = teams.quarterFinals.slice(0, 4);
-  const quarterFinalsRight = teams.quarterFinals.slice(4, 8);
+  const quarterFinalsLeft = teams.quarterFinals.filter(item => item.branch === 1);
+  const quarterFinalsRight = teams.quarterFinals.filter(item => item.branch === 2);
   const [selectedRound, setSelectedRound] = React.useState('quarterFinals');
 
   const handleRoundChange = (event, newValue) => {
@@ -240,7 +271,7 @@ const CompetePage = () => {
 
   return (
     <Box sx={{ p: 4, position: 'relative' }}>
-      {/* Add Regenerate button */}
+      {/* Add new button for quarter finals regeneration */}
       <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
         <Button 
           variant="contained" 
