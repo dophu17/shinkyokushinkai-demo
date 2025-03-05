@@ -11,6 +11,7 @@ import UserPage from './pages/UserPage';
 import NewsPage from './pages/NewsPage';
 import LoginPage from './pages/LoginPage';
 import CompetePage from './pages/CompetePage';
+import CompetePage32 from './pages/CompetePage32';
 import { BrowserRouter, useNavigate, useLocation } from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -50,6 +51,12 @@ const NAVIGATION = [
     to: '/compete'
   },
   {
+    segment: 'compete32',
+    title: 'Compete 32',
+    icon: <DescriptionIcon />,
+    to: '/compete32'
+  },
+  {
     segment: 'logout',
     title: 'Logout',
     icon: <LogoutIcon />,
@@ -82,6 +89,9 @@ function DemoPageContent({ pathname }) {
   }
   if (pathname === '/compete') {
     return <CompetePage />;
+  }
+  if (pathname === '/compete32') {
+    return <CompetePage32 />;
   }
   if (pathname === '/login') {
     return <LoginPage />;
