@@ -78,7 +78,6 @@ const CompetePage = () => {
         team2.isWinner = false;
       }
     }
-    console.log('teams', teams)
     return teams;
   };
 
@@ -188,7 +187,6 @@ const CompetePage = () => {
           status: 'fighting'
         }))
     );
-    console.log(newSemiFinals, 'newSemiFinals');
     setSemiFinals(newSemiFinals);
     const newFinal = (
       newSemiFinals
