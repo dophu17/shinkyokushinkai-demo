@@ -173,6 +173,8 @@ const CompetePage = () => {
   // Add states for tournament rounds
   const [semiFinals, setSemiFinals] = React.useState([]);
   const [final, setFinal] = React.useState([]);
+  const [finalRound1, setFinalRound1] = React.useState([]);
+  const [finalRound2, setFinalRound2] = React.useState([]);
   const [champion, setChampion] = React.useState({});
 
   // Add function to regenerate tournament results
@@ -230,6 +232,11 @@ const CompetePage = () => {
           status: 'fighting'
         }))
     );
+    setFinalRound1(semiFinalTeams)
+    setFinalRound2(finalTeams)
+
+    console.log('semiFinalTeams', semiFinalTeams)
+    console.log('finalTeams', finalTeams)
 
     // Set champion
     const winner = finalTeams.find(team => team.isWinner) || {};
@@ -254,12 +261,16 @@ const CompetePage = () => {
     quarterFinals: quarterFinalsTeams,
     semiFinals,
     final,
-    champion
+    champion,
+    finalRound1,
+    finalRound2
   };
+  console.log('team', teams)
 
   const quarterFinalsLeft = teams.quarterFinals.filter(item => item.branch === 1);
+  console.log('quarterFinalsLeft', quarterFinalsLeft)
   const quarterFinalsRight = teams.quarterFinals.filter(item => item.branch === 2);
-  const [selectedRound, setSelectedRound] = React.useState('quarterFinals');
+  const [selectedRound, setSelectedRound] = React.useState('round1');
 
   const handleRoundChange = (event, newValue) => {
     setSelectedRound(newValue);
@@ -267,12 +278,26 @@ const CompetePage = () => {
 
   const getRoundTeams = () => {
     switch (selectedRound) {
-      case 'quarterFinals':
+      case 'round1':
         return teams.quarterFinals;
-      case 'semiFinals':
+      case 'round2':
+        return teams.quarterFinals
+          .filter(team => team.isWinner && team.status === 'finished')
+          .map(team => ({
+            ...team,
+            status: team.status === 'fighting' ? 'fighting' : 'finished'
+          }));
+      case 'quarterFinals':
         return teams.semiFinals;
-      case 'final':
+      case 'semiFinals':
         return teams.final;
+      case 'final':
+        return teams.final
+          .filter(team => team.isWinner && team.status === 'finished')
+          .map(team => ({
+            ...team,
+            status: team.status === 'fighting' ? 'fighting' : 'finished'
+          }));
       case 'champion':
         return [teams.champion];
       default:
@@ -303,12 +328,12 @@ const CompetePage = () => {
           justifyContent: 'center', 
           gap: 8, 
           minWidth: '1400px', // Ensure minimum width for readability
-          p: 4 
+          p: 4
         }}>
           {/* Left Branch */}
-          <Box sx={{ display: 'flex', gap: 4, position: 'relative' }}>
+          <Box sx={{ display: 'flex', gap: 8, position: 'relative', paddingLeft: '510px' }}>
             {/* First Round - 8 matches */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, paddingLeft: '20px' }}>
               {Array.from({ length: 16 }, (_, i) => i).map((index) => (
                 <Box 
                   key={index} 
@@ -332,6 +357,7 @@ const CompetePage = () => {
                         top: '20px',
                         width: '32px'
                       }}
+                      className={`bracket-line-horizontal-level-1-team-box-${index + 1}`}
                     />
                   )}
                   {index % 2 === 0 && (
@@ -340,10 +366,52 @@ const CompetePage = () => {
                       status={quarterFinalsLeft[index]?.status}
                       sx={{ 
                         right: '-32px',
+                        top: '102px',
+                        width: '32px'
+                      }}
+                      className={`bracket-line-horizontal-level-1-team-box-${index + 1}`}
+                    />
+                  )}
+                  {index % 2 === 0 && (
+                    <BracketLine 
+                      isWinner={quarterFinalsLeft[index]?.isWinner}
+                      status={quarterFinalsLeft[index]?.status}
+                      typeLine="top"
+                      groupAlign="left"
+                      sx={{ 
+                        right: '-32px',
                         top: '20px',
-                        height: '84px', // Increased height for larger bracket
+                        height: '42px', // Increased height for larger bracket
                         width: '2px'
                       }}
+                      className={`bracket-line-vertical-level-1-team-box-${index + 1}-top`}
+                    />
+                  )}
+                  {index % 2 === 0 && (
+                    <BracketLine 
+                    isWinner={quarterFinalsLeft[index + 1]?.isWinner}
+                      status={quarterFinalsLeft[index]?.status}
+                      typeLine="bottom"
+                      groupAlign="left"
+                      sx={{ 
+                        right: '-32px',
+                        top: '62px',
+                        height: '42px', // Increased height for larger bracket
+                        width: '2px'
+                      }}
+                      className={`bracket-line-vertical-level-1-team-box-${index + 1}-bottom`}
+                    />
+                  )}
+                  {index % 2 === 0 && (
+                    <BracketLine 
+                      isWinner={true}
+                      status={quarterFinalsLeft[index]?.status}
+                      sx={{ 
+                        right: '-64px',
+                        top: '62px',
+                        width: '32px'
+                      }}
+                      className='bracket-line-horizontal-level-2-team-box-1'
                     />
                   )}
                 </Box>
@@ -357,7 +425,7 @@ const CompetePage = () => {
                   key={index} 
                   sx={{ 
                     position: 'relative', 
-                    mb: index % 2 === 0 ? 16 : 16 // Increased spacing
+                    mb: index % 2 === 0 ? 19 : 19 // Increased spacing
                   }}
                 >
                   <TeamBox 
@@ -376,16 +444,55 @@ const CompetePage = () => {
                           top: '20px',
                           width: '32px'
                         }}
+                        className={`bracket-line-horizontal-level-3-team-box-${index + 1}`}
                       />
                       <BracketLine 
                         isWinner={true}
                         status={teams.semiFinals[index]?.status}
                         sx={{ 
                           right: '-32px',
+                          top: '228px',
+                          width: '32px'
+                        }}
+                        className={`bracket-line-horizontal-level-3-team-box-${index + 1}`}
+                      />
+                      <BracketLine 
+                        isWinner={teams.semiFinals[index]?.isWinner}
+                        status={teams.semiFinals[index]?.status}
+                        points={teams.semiFinals[index]?.points}
+                        typeLine="top"
+                        groupAlign="left"
+                        sx={{ 
+                          right: '-32px',
                           top: '20px',
-                          height: '168px', // Increased height
+                          height: '104px', // Increased height
                           width: '2px'
                         }}
+                        className={`bracket-line-vertical-level-2-team-box-${index + 1}-top`}
+                      />
+                      <BracketLine 
+                        isWinner={teams.semiFinals[index + 1]?.isWinner}
+                        status={teams.semiFinals[index + 1]?.status}
+                        points={teams.semiFinals[index + 1]?.points}
+                        typeLine="top"
+                        groupAlign="left"
+                        sx={{ 
+                          right: '-32px',
+                          top: '124px',
+                          height: '104px', // Increased height
+                          width: '2px'
+                        }}
+                        className={`bracket-line-vertical-level-2-team-box-${index + 1}-bottom`}
+                      />
+                      <BracketLine 
+                        isWinner={true}
+                        status={teams.semiFinals[index]?.status}
+                        sx={{ 
+                          right: '-64px',
+                          top: '124px',
+                          width: '32px'
+                        }}
+                        className={`bracket-line-horizontal-level-4-team-box-${index + 1}`}
                       />
                     </>
                   )}
@@ -394,13 +501,13 @@ const CompetePage = () => {
             </Box>
 
             {/* Quarter Finals - 2 matches */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 14 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 19 }}>
               {Array.from({ length: 4 }, (_, i) => i).map((index) => (
                 <Box 
                   key={index} 
                   sx={{ 
                     position: 'relative', 
-                    mb: index % 2 === 0 ? 32 : 32 // Increased spacing
+                    mb: index % 2 === 0 ? 45 : 45 // Increased spacing
                   }}
                 >
                   <TeamBox 
@@ -419,16 +526,173 @@ const CompetePage = () => {
                           top: '20px',
                           width: '32px'
                         }}
+                        className={`bracket-line-horizontal-level-5-team-box-${index + 1}`}
                       />
                       <BracketLine 
                         isWinner={true}
                         status={teams.final[index]?.status}
                         sx={{ 
                           right: '-32px',
+                          top: '434px',
+                          width: '32px'
+                        }}
+                        className={`bracket-line-horizontal-level-5-team-box-${index + 1}`}
+                      />
+                      <BracketLine 
+                        isWinner={teams.final[index]?.isWinner}
+                        status={teams.final[index]?.status}
+                        points={teams.final[index]?.points}
+                        typeLine="top"
+                        groupAlign="left"
+                        sx={{ 
+                          right: '-32px',
                           top: '20px',
-                          height: '336px', // Increased height
+                          height: '207px', // Increased height
                           width: '2px'
                         }}
+                        className={`bracket-line-vertical-level-3-team-box-${index + 1}-top`}
+                      />
+                      <BracketLine 
+                        isWinner={teams.final[index + 1]?.isWinner}
+                        status={teams.final[index + 1]?.status}
+                        points={teams.final[index + 1]?.points}
+                        typeLine="bottom"
+                        groupAlign="left"
+                        sx={{ 
+                          right: '-32px',
+                          top: '227px',
+                          height: '207px', // Increased height
+                          width: '2px'
+                        }}
+                        className={`bracket-line-vertical-level-3-team-box-${index + 1}-bottom`}
+                      />
+                      <BracketLine 
+                        isWinner={true}
+                        status={teams.final[index]?.status}
+                        sx={{ 
+                          right: '-64px',
+                          top: '226px',
+                          width: '32px'
+                        }}
+                        className={`bracket-line-horizontal-level-6-team-box-${index + 1}`}
+                      />
+                    </>
+                  )}
+                </Box>
+              ))}
+            </Box>
+
+            {/* Finals round 1 - 4 teams */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 45 }}>
+              {Array.from({ length: 2 }, (_, i) => i).map((index) => (
+                <Box 
+                  key={index} 
+                  sx={{ 
+                    position: 'relative', 
+                    mb: index % 2 === 0 ? 98 : 98
+                  }}
+                >
+                  <TeamBox 
+                    isWinner={teams.finalRound1[index]?.isWinner} 
+                    status={teams.finalRound1[index]?.status}
+                    sx={{ width: '180px' }}
+                  >
+                    {teams.finalRound1[index]?.name || ''}
+                  </TeamBox>
+                  {index === 0 && (
+                    <>
+                      <BracketLine 
+                        isWinner={true}
+                        status={teams.finalRound1[index]?.status}
+                        sx={{ 
+                          right: '-30px',
+                          top: '20px',
+                          width: '30px'
+                        }}
+                        className={`bracket-line-horizontal-level-7-team-box-${index + 1}`}
+                      />
+                      <BracketLine 
+                        isWinner={true}
+                        status={teams.finalRound1[index]?.status}
+                        sx={{ 
+                          right: '-30px',
+                          top: '850px',
+                          width: '30px'
+                        }}
+                        className={`bracket-line-horizontal-level-7-team-box-${index + 1}`}
+                      />
+                      <BracketLine 
+                        isWinner={teams.finalRound1[index]?.isWinner}
+                        status={teams.finalRound1[index]?.status}
+                        points={teams.finalRound1[index]?.points}
+                        typeLine="top"
+                        groupAlign="left"
+                        sx={{ 
+                          right: '-30px',
+                          top: '20px',
+                          height: '415px',
+                          width: '2px'
+                        }}
+                        className={`bracket-line-vertical-level-4-team-box-${index + 1}-top`}
+                      />
+                      <BracketLine 
+                        isWinner={teams.finalRound1[index + 1]?.isWinner}
+                        status={teams.finalRound1[index + 1]?.status}
+                        points={teams.finalRound1[index + 1]?.points}
+                        typeLine="bottom"
+                        groupAlign="left"
+                        sx={{ 
+                          right: '-30px',
+                          top: '435px',
+                          height: '415px',
+                          width: '2px'
+                        }}
+                        className={`bracket-line-vertical-level-4-team-box-${index + 1}-bottom`}
+                      />
+                      <BracketLine 
+                        isWinner={true}
+                        status={teams.finalRound1[index]?.status}
+                        sx={{ 
+                          right: '-60px',
+                          top: '435px',
+                          width: '30px'
+                        }}
+                        className={`bracket-line-horizontal-level-8-team-box-${index + 1}`}
+                      />
+                    </>
+                  )}
+                </Box>
+              ))}
+            </Box>
+
+            {/* Finals round 1 - 2 teams */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 97 }}>
+              {Array.from({ length: 1 }, (_, i) => i).map((index) => (
+                <Box 
+                  key={index} 
+                  sx={{ 
+                    position: 'relative', 
+                    mb: index % 2 === 0 ? 1 : 55
+                  }}
+                >
+                  <TeamBox 
+                    isWinner={teams.finalRound2[index]?.isWinner} 
+                    status={teams.finalRound2[index]?.status}
+                    sx={{ width: '180px' }}
+                  >
+                    {teams.finalRound2[index]?.name || ''}
+                  </TeamBox>
+                  {index === 0 && (
+                    <>
+                      <BracketLine 
+                        isWinner={teams.finalRound2[index]?.isWinner}
+                        status={teams.finalRound2[index]?.status}
+                        sx={{ 
+                          right: '-30px',
+                          top: '20px',
+                          width: '30px'
+                        }}
+                        className={`bracket-line-horizontal-level-9-team-box-${index + 1}`}
                       />
                     </>
                   )}
@@ -596,9 +860,11 @@ const CompetePage = () => {
             sx={{ mb: 2 }}
             centered
           >
-            <Tab label="Quarter Finals" value="quarterFinals" />
-            <Tab label="Semi Finals" value="semiFinals" />
-            <Tab label="Final" value="final" />
+            <Tab label="Round 1 (32 Teams)" value="round1" />
+            <Tab label="Round 2 (16 Teams)" value="round2" />
+            <Tab label="Quarter Finals (8 Teams)" value="quarterFinals" />
+            <Tab label="Semi Finals (4 Teams)" value="semiFinals" />
+            <Tab label="Finals (2 Teams)" value="final" />
             <Tab label="Champion" value="champion" />
           </Tabs>
           <TableContainer component={Paper}>
