@@ -235,9 +235,6 @@ const CompetePage = () => {
     setFinalRound1(semiFinalTeams)
     setFinalRound2(finalTeams)
 
-    console.log('semiFinalTeams', semiFinalTeams)
-    console.log('finalTeams', finalTeams)
-
     // Set champion
     const winner = finalTeams.find(team => team.isWinner) || {};
     setChampion({
@@ -265,10 +262,8 @@ const CompetePage = () => {
     finalRound1,
     finalRound2
   };
-  console.log('team', teams)
 
   const quarterFinalsLeft = teams.quarterFinals.filter(item => item.branch === 1);
-  console.log('quarterFinalsLeft', quarterFinalsLeft)
   const quarterFinalsRight = teams.quarterFinals.filter(item => item.branch === 2);
   const [selectedRound, setSelectedRound] = React.useState('round1');
 
@@ -376,6 +371,7 @@ const CompetePage = () => {
                     <BracketLine 
                       isWinner={quarterFinalsLeft[index]?.isWinner}
                       status={quarterFinalsLeft[index]?.status}
+                      points={quarterFinalsLeft[index]?.points}
                       typeLine="top"
                       groupAlign="left"
                       sx={{ 
@@ -389,8 +385,9 @@ const CompetePage = () => {
                   )}
                   {index % 2 === 0 && (
                     <BracketLine 
-                    isWinner={quarterFinalsLeft[index + 1]?.isWinner}
-                      status={quarterFinalsLeft[index]?.status}
+                      isWinner={quarterFinalsLeft[index + 1]?.isWinner}
+                      status={quarterFinalsLeft[index + 1]?.status}
+                      points={quarterFinalsLeft[index + 1]?.points}
                       typeLine="bottom"
                       groupAlign="left"
                       sx={{ 
