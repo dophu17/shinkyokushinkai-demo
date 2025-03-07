@@ -121,7 +121,7 @@ button:focus-visible {
   min-width: max-content;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  /* gap: 10px; */
 }
 
 .slotWrapper {
@@ -139,21 +139,35 @@ button:focus-visible {
   width: 100%;
   justify-content: space-between;
 }
-.tournamentBorderWrapper {
+.tournamentBorderWrapper, 
+.tournamentBorderWrapper_bottom, 
+.tournamentBorderWrapper_top, 
+.tournamentBorderWrapper_bottom_lv3_1, 
+.tournamentBorderWrapper_bottom_lv3_2,
+.tournamentBorderWrapper_bottom_lv3_3,
+.tournamentBorderWrapper_top_lv3_1,
+.tournamentBorderWrapper_top_lv4_1,
+.tournamentBorderWrapper_top_lv4_2,
+.tournamentBorderWrapper_top_lv4_3,
+.tournamentBorderWrapper_lv3_1 {
   display: flex;
   flex-direction: column;
-  height: calc(var(--slotHeight) + 10px);
+  /* height: calc(var(--slotHeight) + 10px); */
+  height: calc(var(--slotHeight));
   width: 100%;
-  margin: calc((var(--slotHeight) + 10px) / 2) 0;
+  /* margin: calc((var(--slotHeight) + 10px) / 2) 0; */
+  margin: calc(var(--slotHeight) / 2) 0;
 }
 
 .Round-2 .tournamentBorderWrapper {
-  height: calc((var(--slotHeight) + 10px) * 2);
-  margin: calc(var(--slotHeight) + 10px) 0;
+  /* height: calc((var(--slotHeight) + 10px) * 2);
+  margin: calc(var(--slotHeight) + 10px) 0; */
+  height: calc(var(--slotHeight) * 2);
+  margin: calc(var(--slotHeight)) 0;
 }
 .Round-3 .tournamentBorderWrapper {
-  height: calc((var(--slotHeight) + 10px) * 4);
-  margin: calc((var(--slotHeight) + 10px) * 2) 0;
+  height: calc((var(--slotHeight)) * 4);
+  margin: calc((var(--slotHeight)) * 2) 0;
 }
 .Round-4 .tournamentBorderWrapper {
   height: calc((var(--slotHeight) + 10px) * 8);
@@ -174,6 +188,103 @@ button:focus-visible {
   margin: calc((var(--slotHeight) + 10px) * 32) 0;
 }
 
+.Round-2 .tournamentBorderWrapper_bottom {
+  height: calc((var(--slotHeight) + 10px) * 1.5);
+  margin-bottom: 72px;
+}
+
+.Round-3 .tournamentBorderWrapper_bottom {
+  height: calc((var(--slotHeight) + 10px) * 2.75);
+  margin-bottom: 14px;
+}
+
+.Round-3 .tournamentBorderWrapper_odd_top {
+  margin-top: 47px;
+}
+
+.Round-3 .tournamentBorderWrapper_odd_top_lv3_1 {
+  margin-top: 54px;
+  margin-bottom: 118px;
+}
+
+.Round-3 .tournamentBorderWrapper_odd_top_lv3_2 {
+  margin-top: 11px;
+  margin-bottom: 104px;
+}
+
+.Round-3 .tournamentBorderWrapper_odd_top_lv3_3 {
+  margin-top: 76px;
+  margin-bottom: 104px;
+}
+
+.Round-3 .tournamentBorderWrapper_bottom_lv3_1 {
+  height: 166px;
+  margin-bottom: 12px;
+}
+
+.Round-3 .tournamentBorderWrapper_bottom_lv3_2 {
+  height: 181px;
+  margin-bottom: -31px;
+}
+
+.Round-3 .tournamentBorderWrapper_bottom_lv3_3 {
+  height: 182px;
+  margin-top: 120px;
+  margin-bottom: -5px;
+}
+
+.Round-3 .tournamentBorderWrapper_lv3_1 {
+  height: calc((var(--slotHeight)) * 3.78);
+  margin-bottom: 71px;
+}
+
+.Round-3 .tournamentBorderWrapper_lv3_1 {
+  height: calc((var(--slotHeight)) * 3.78);
+  margin-bottom: 71px;
+}
+
+.Round-3 .tournamentBorderWrapper_top_lv3_1 {
+  height: calc((var(--slotHeight) + 2px) * 1.5);
+  margin-bottom: 59px;
+}
+
+.Round-4 .tournamentBorderWrapper_top_lv4_1 {
+  height: 319px;
+  margin-bottom: 103px;
+}
+
+.Round-4 .tournamentBorderWrapper_top_lv4_2 {
+  height: 332px;
+  margin-bottom: 60px;
+}
+
+.Round-4 .tournamentBorderWrapper_top_lv4_3 {
+  height: 348px;
+  margin-bottom: 192px;
+}
+
+.Round-2 .tournamentBorderWrapper_top {
+  height: calc((var(--slotHeight) + 2px) * 1.5);
+  margin-bottom: 59px;
+}
+
+.Round-2 .tournamentBorderWrapper_odd_bottom {
+  margin: 59px 0px !important;
+}
+
+.tournamentBorderWrapper_odd_top, 
+.tournamentBorderWrapper_odd_bottom,
+.tournamentBorderWrapper_odd_top_lv3_1,
+.tournamentBorderWrapper_odd_top_lv3_2,
+.tournamentBorderWrapper_odd_top_lv3_3 {
+  display: flex;
+  flex-direction: column;
+  /* height: calc(var(--slotHeight) + 10px); */
+  width: 100%;
+  /* margin: calc((var(--slotHeight) + 10px) / 2) 0; */
+  margin: calc((var(--slotHeight)) / 2) 0;
+}
+
 .tournamentBlockWrapper__even .tournamentBorder {
   transform: scale(-1, 1);
 }
@@ -182,6 +293,28 @@ button:focus-visible {
   min-height: 10px;
   height: 100%;
 }
+.tournamentBorderWrapper_odd_top > div, 
+.tournamentBorderWrapper_odd_bottom > div,
+.tournamentBorderWrapper_odd_top_lv3_1 > div,
+.tournamentBorderWrapper_odd_top_lv3_2 > div,
+.tournamentBorderWrapper_odd_top_lv3_3 > div {
+  min-height: 10px;
+  /* height: 100%; */
+}
+.tournamentBorderWrapper_bottom > div, 
+.tournamentBorderWrapper_top > div, 
+.tournamentBorderWrapper_bottom_lv3_1 > div, 
+.tournamentBorderWrapper_bottom_lv3_2 > div,
+.tournamentBorderWrapper_bottom_lv3_3 > div,
+.tournamentBorderWrapper_top_lv3_1 > div,
+.tournamentBorderWrapper_top_lv4_1 > div,
+.tournamentBorderWrapper_top_lv4_2 > div,
+.tournamentBorderWrapper_top_lv4_3 > div,
+.tournamentBorderWrapper_lv3_1 > div {
+  min-height: 10px;
+  height: 100%;
+}
+
 .tournamentBorder_top {
   border-top: 2px solid #000;
   border-right: 2px solid #000;
@@ -207,4 +340,22 @@ button:focus-visible {
 .slotInfoWrap p {
   white-space: pre;
 }
-
+.odd-member-css {
+  margin: 35px 0px !important;
+}
+.tournamentBorder_mid {
+  border-bottom: 2px solid #000 !important;
+}
+.tournamentOdd {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 2px !important;
+  align-items: center;
+}
+.hr-divider {
+  border: none;
+  background-color: #000;
+  height: 2px;
+  width: 100%;
+}

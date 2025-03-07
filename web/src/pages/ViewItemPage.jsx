@@ -247,20 +247,20 @@ const DraggablePlayer = ({ player, index, isPlaced = false, fromBracket = false 
   );
 };
 
-const BracketSlot = ({ onDrop, player, index, onRemove }) => {
+const BracketSlot = ({ onDrop, player, index, onRemove, classNameCustom }) => {
   const [{ isOver }, drop] = useDrop(() => ({
     accept: ItemTypes.PLAYER,
     drop: (item) => onDrop(item, index),
     canDrop: () => true,
     collect: (monitor) => ({
       isOver: !!monitor.isOver()
-    })
+    }),
   }));
 
   return (
     <div
       ref={drop}
-      className={`slotWrapper p-2 border rounded ${isOver ? 'bg-gray-100' : 'bg-white'}`}
+      className={`slotWrapper p-2 border rounded ${isOver ? 'bg-gray-100' : 'bg-white'} ${classNameCustom}`}
     >
       {player ? (
         <div className="flex items-center justify-between gap-2">
@@ -289,7 +289,9 @@ const BracketSlot = ({ onDrop, player, index, onRemove }) => {
 };
 
 const TournamentBracket = () => {
-  const [playerCount, setPlayerCount] = useState(32);
+  const [playerCount, setPlayerCount] = useState(2);
+  const [playerBlock1, setPlayerBlock1] = useState(1);
+  const [playerBlock2, setPlayerBlock2] = useState(1);
   const [brackets, setBrackets] = useState(() => {
     // 初期スロットを生成
     const initialBrackets = {};
@@ -303,6 +305,10 @@ const TournamentBracket = () => {
   const handlePlayerCountChange = (e) => {
     const newCount = parseInt(e.target.value);
     setPlayerCount(newCount);
+    let _playerBlock1 = newCount % 2 === 0 ? newCount / 2 : Math.floor(newCount / 2) + 1;
+    let oddCondition = _playerBlock1 % 2 !== 0 && (newCount - _playerBlock1) % 2 !== 0;
+    setPlayerBlock1( oddCondition ? _playerBlock1 + 1 : _playerBlock1);
+    setPlayerBlock2(oddCondition ? newCount - _playerBlock1 - 1 : newCount - _playerBlock1);
 
     // bracketsを新しい数で初期化
     const newBrackets = {};
@@ -373,46 +379,137 @@ const TournamentBracket = () => {
     });
   };
 
+  const calcRound = (personsOnRound) => {
+    return Math.ceil(Math.log2(personsOnRound));
+  }
+
+  const calcRoundDetail = (blockIndex, index) => {
+    return (blockIndex === 0 ? calcRoundDetailItem(playerBlock1, index) : calcRoundDetailItem(playerBlock2, index));
+  }
+
+  const calcRoundDetailItem = (personsOnRound, index) => {
+    return (personsOnRound % 2 !== 0 ? Math.ceil((personsOnRound + 1) / Math.pow(2, index + 1)) : Math.ceil(personsOnRound / Math.pow(2, index + 1)));
+  }
+
+  const calcMemberOnRound = (blockIndex, index) => {
+    let members = blockIndex === 0 ? playerBlock1 : playerBlock2;
+    let result = members;
+    for (let i = 0; i < index; i++) {
+      result = Math.ceil(result / 2);
+    }
+    return result;
+  }
+
+  const checkOddMember = (blockIndex) => {
+    let members = blockIndex === 0 ? playerBlock1 : playerBlock2; 
+    return members % 2 !== 0;
+  }
+
+  const getOddClass = (borderIndex, blockIndex, index) => {
+    if ( index == 2 && borderIndex == 0) { // round 3 luon la le
+      if (calcMemberOnRound(blockIndex, 0) % 2 == 0) { // truong hop 18
+        return 'tournamentBorderWrapper_odd_top_lv3_1';
+      } else if ( calcMemberOnRound(blockIndex, 0) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 ) {   //Truong hop 17
+        return 'tournamentBorderWrapper_odd_top_lv3_2';
+      } else if (calcMemberOnRound(blockIndex, 0) % 2 !== 0 && calcMemberOnRound(blockIndex, 1 ) % 2 == 0) {
+        return 'tournamentBorderWrapper_odd_top_lv3_3';
+      }
+    }
+    return borderIndex == 0 ? 'tournamentBorderWrapper_odd_top' : 'tournamentBorderWrapper_odd_bottom' ;
+  };
+
+  const getClass = (borderindex, index, membersInOldRound, blockIndex) => {
+    let totalRound = blockIndex === 0 ? calcRound(playerBlock1) : calcRound(playerBlock2);
+    let memberOnRoundOne = calcMemberOnRound(blockIndex, 0);
+    if((index+1) % 2 == 0 && borderindex == 0 && index > 0 && membersInOldRound % 2 !== 0 ) {
+      if ( index == 3 ) {
+        if( calcMemberOnRound(blockIndex, 3) == 2 ){
+          if(calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0 ) {
+            return 'tournamentBorderWrapper_top_lv4_1';
+          } else if (calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 == 0 ) {
+            return 'tournamentBorderWrapper_top_lv4_2';
+          } else if (calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 == 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0 ) {
+            return 'tournamentBorderWrapper_top_lv4_3';
+          }
+        } 
+      }
+
+      return 'tournamentBorderWrapper_top';
+    } else if ((index+1) % 2 !== 0 && (borderindex + 1 == calcRoundDetail(blockIndex, index)) && index > 0 && membersInOldRound % 2 !== 0 ) {
+      if ( index == 2 ) {
+        if( calcMemberOnRound(blockIndex, 2) == 2 ){
+          if(memberOnRoundOne % 2 !== 0) {
+            return 'tournamentBorderWrapper_bottom_lv3_1';
+          } else {
+            return 'tournamentBorderWrapper_bottom_lv3_2';
+          }
+        } else {
+          return 'tournamentBorderWrapper_bottom_lv3_3';
+          // if(memberOnRoundOne % 2 !== 0) {
+          //   return 'tournamentBorderWrapper_bottom_lv3_3';
+          // } else {
+          //   return 'tournamentBorderWrapper_bottom_lv3_4';
+          // }
+        }
+        // if(memberOnRoundOne % 2 !== 0 ) {
+        //   return memberOnRoundOne == 5 ? 'tournamentBorderWrapper_bottom_lv3_1' : 'tournamentBorderWrapper_bottom_lv3_3';
+        // } else if (memberOnRoundOne % 2 == 0) {
+        //   return 'tournamentBorderWrapper_bottom_lv3_2' ;
+        // }
+      }
+
+
+      return 'tournamentBorderWrapper_bottom';
+    } else{
+      if(index == 2 ) {   
+        if (calcMemberOnRound(blockIndex, 2) == 2 && calcMemberOnRound(blockIndex, 1) % 2 == 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0) { // Trường hợp 3 round, round 2 không lẻ, nhưng roud 1 lại lẻ. (round 3 chỉ có 1 cặp cuối)
+          return 'tournamentBorderWrapper_lv3_1';
+        }
+      } 
+      return 'tournamentBorderWrapper';
+    }
+  };
+
+
   return (
     <div className="p-4">
       <div className="mb-8">
 
         <div className="mb-4">
           <label htmlFor="playerCount" className="mr-2">参加人数:</label>
-          <select
+          <input
             id="playerCount"
+            type="number"
+            min="2"
             value={playerCount}
             onChange={handlePlayerCountChange}
-            className="border rounded p-1"
-          >
-            {[32, 64, 128].map(num => (
-              <option key={num} value={num}>{num}人</option>
-            ))}
-          </select>
+            className="border rounded p-1 w-24"
+          />
         </div>
 
         <h2 className="text-xl font-bold my-4">トーナメント表</h2>
-        <div className={`tournamentWrapper grid grid-cols-[1fr_1fr] overflow-scroll totalBlocks__${Math.ceil(playerCount / 32)}`}>
-          {Array.from({ length: Math.ceil(playerCount / 32) }, (_, blockIndex) => (
+        <div className={`tournamentWrapper grid grid-cols-[1fr_1fr] overflow-scroll totalBlocks__2`}>
+          {Array.from({ length: 2 }, (_, blockIndex) => (
             <div
               key={`block-${blockIndex}`}
               className={`
               tournamentBlockWrapper flex justify-between 
-              ${blockIndex % 2 === 1 ? 'tournamentBlockWrapper__even' : ''} 
-              ${blockIndex > 1 ? 'tournamentBlockWrapper__65-128' : ''}`}>
+              ${blockIndex == 1 ? 'tournamentBlockWrapper__even' : ''} 
+              ${blockIndex == 0 ? 'tournamentBlockWrapper__65-128' : ''}`}>
               <div className="tournamentRoundWrapper flex flex-row items-center">
                 <div className="flex justify-between flex-col">
-                  {Array.from({ length: Math.min(32, playerCount - blockIndex * 32) }, (_, index) => (
+                  {Array.from({ length: blockIndex === 0 ? playerBlock1 : playerBlock2 }, (_, index) => (
                     <BracketSlot
-                      key={`bracket-${blockIndex * 32 + index}`}
-                      player={brackets[blockIndex * 32 + index]}
-                      index={blockIndex * 32 + index}
+                      key={`bracket-${blockIndex + index}`}
+                      player={brackets[blockIndex + index]}
+                      index={blockIndex + index}
                       onDrop={handleDrop}
                       onRemove={handleRemovePlayer}
+                      // classNameCustom={ index == 0 && checkOddMember(blockIndex) ? 'odd-member-css' : ''}
                     />
                   ))}
                 </div>
-                {Array.from({ length: 5 }, (_, index) => (  // Revert lại thành 5 rounds cố định
+                {/* {Array.from({ length: 5 }, (_, index) => ( 
                   <div
                     key={`round-${index}`}
                     className={`tournamentRound flex justify-cente flex-col Round-${index + 1}`}
@@ -424,12 +521,41 @@ const TournamentBracket = () => {
                       </div>
                     ))}
                   </div>
-                ))}
+                ))} */}
+                {Array.from({ length: blockIndex === 0 ? calcRound(playerBlock1) : calcRound(playerBlock2) }, (_, index) => {
+                  let members = calcMemberOnRound(blockIndex, index);
+                  let membersInOldRound = calcMemberOnRound(blockIndex, index-1);
+                  return ( 
+                  <div
+                    key={`round-${index}`}
+                    className={`tournamentRound flex justify-cente flex-col Round-${index + 1}`}
+                  >
+                    {Array.from({ length: calcRoundDetail(blockIndex, index) }, (_, borderindex) => {
+                      return (
+                        //  <div key={`round-${index}-${borderindex}`} className={`tournamentBorderWrapper_odd ${(index > 0 && calcMemberOnRound(blockIndex, index) % 2 !== 0) ? '!h-[2px]' : ''}`}>
+                        //     <div className="tournamentOdd">
+                        //       <hr className="hr-divider" />
+                        //     </div>
+                        // </div>
+                      ( ((index+1) % 2 !== 0 && borderindex == 0 && members % 2 !== 0) || ((index+1) % 2 == 0 && borderindex + 1 == calcRoundDetail(blockIndex, index) && members % 2 !== 0)) ? (
+                        <div key={`round-${index}-${borderindex}`} className={`${getOddClass(borderindex, blockIndex, index)} !h-[2px]`}>
+                            <div className="tournamentOdd">
+                              <hr className="hr-divider" />
+                            </div>
+                        </div>
+                      ) : ( 
+                      <div key={`round-${index}-${borderindex}`} className={`${getClass(borderindex, index, membersInOldRound, blockIndex)}`}>
+                        <div className="tournamentBorder tournamentBorder_top"></div>
+                        <div className="tournamentBorder tournamentBorder_buttom"></div>
+                      </div> )
+                    )})}
+                  </div>
+                )})}
               </div>
-              <div className={`
+              {/* <div className={`
                 blockWiner tournamentBorder
                 ${[32, 64].includes(playerCount) ? 'tournamentBorder__RightNone' : ''}
-              `}></div>
+              `}></div> */}
             </div>
           ))}
         </div>
