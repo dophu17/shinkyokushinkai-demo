@@ -234,6 +234,8 @@ const CompetePage = () => {
     );
     setFinalRound1(semiFinalTeams)
     setFinalRound2(finalTeams)
+    console.log('finalRound1', semiFinalTeams)
+    console.log('finalRound2', finalTeams)
 
     // Set champion
     const winner = finalTeams.find(team => team.isWinner) || {};
@@ -287,8 +289,9 @@ const CompetePage = () => {
       case 'semiFinals':
         return teams.final;
       case 'final':
-        return teams.final
-          .filter(team => team.isWinner && team.status === 'finished')
+        return teams.finalRound1;
+      case 'finalRound1':
+        return teams.finalRound2
           .map(team => ({
             ...team,
             status: team.status === 'fighting' ? 'fighting' : 'finished'
@@ -1106,6 +1109,7 @@ const CompetePage = () => {
             <Tab label="Quarter Finals (8 Teams)" value="quarterFinals" />
             <Tab label="Semi Finals (4 Teams)" value="semiFinals" />
             <Tab label="Finals (2 Teams)" value="final" />
+            <Tab label="Finals (1 Team)" value="finalRound1" />
             <Tab label="Champion" value="champion" />
           </Tabs>
           <TableContainer component={Paper}>
