@@ -684,6 +684,7 @@ const CompetePage = () => {
                       <BracketLine 
                         isWinner={teams.finalRound2[index]?.isWinner}
                         status={teams.finalRound2[index]?.status}
+                        points={teams.finalRound2[index]?.points}
                         sx={{ 
                           right: '-96px',
                           top: '20px',
@@ -1071,6 +1072,7 @@ const CompetePage = () => {
                       <BracketLine 
                         isWinner={teams.finalRound2[index + 1]?.isWinner}
                         status={teams.finalRound2[index + 1]?.status}
+                        points={teams.finalRound2[index + 1]?.points}
                         sx={{ 
                           left: '-96px',
                           top: '20px',
