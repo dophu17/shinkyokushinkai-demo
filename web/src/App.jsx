@@ -10,7 +10,12 @@ import LinkIcon from '@mui/icons-material/Link';
 import UserPage from './pages/UserPage';
 import NewsPage from './pages/NewsPage';
 import LoginPage from './pages/LoginPage';
+
 import { BrowserRouter, useNavigate, useLocation, Routes, Route } from 'react-router-dom';
+
+import CompetePage from './pages/CompetePage';
+import CompetePage32 from './pages/CompetePage32';
+
 import LogoutIcon from '@mui/icons-material/Logout';
 import ViewItemPage from './pages/ViewItemPage';
 
@@ -50,6 +55,18 @@ const NAVIGATION = [
     to: '/view-item'
   },
   {
+    segment: 'compete',
+    title: 'Compete',
+    icon: <DescriptionIcon />,
+    to: '/compete'
+  },
+  {
+    segment: 'compete32',
+    title: 'Compete 32',
+    icon: <DescriptionIcon />,
+    to: '/compete32'
+  },
+  {
     segment: 'logout',
     title: 'Logout',
     icon: <LogoutIcon />,
@@ -74,12 +91,17 @@ const demoTheme = createTheme({
 });
 
 function DemoPageContent({ pathname }) {
-  console.log('pathname', pathname);
   if (pathname === '/users') {
     return <UserPage />;
   }
   if (pathname === '/news') {
     return <NewsPage />;
+  }
+  if (pathname === '/compete') {
+    return <CompetePage />;
+  }
+  if (pathname === '/compete32') {
+    return <CompetePage32 />;
   }
   if (pathname === '/login') {
     return <LoginPage />;
@@ -115,7 +137,6 @@ function AppContent() {
   
   React.useEffect(() => {
     const token = localStorage.getItem('token');
-    console.log('token', token);
     if (token && location.pathname === '/login') {
       navigate('/dashboard');
     } else if (!token && location.pathname !== '/login') {
