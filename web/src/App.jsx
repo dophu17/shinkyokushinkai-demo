@@ -179,7 +179,8 @@ function AppContent() {
       navigation={navigation}
       router={{
         pathname: location.pathname,
-        navigate: handleNavigation
+        navigate: handleNavigation,
+        searchParams: new URLSearchParams(location.search)
       }}
       theme={demoTheme}
       window={window}
