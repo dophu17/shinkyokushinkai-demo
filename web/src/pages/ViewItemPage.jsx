@@ -407,11 +407,13 @@ const TournamentBracket = () => {
 
   const getOddClass = (borderIndex, blockIndex, index) => {
     if ( index == 2 && borderIndex == 0) { // round 3 luon la le
-      if (calcMemberOnRound(blockIndex, 0) % 2 == 0) { // truong hop 18
+      if (calcMemberOnRound(blockIndex, 0) % 2 == 0 && calcMemberOnRound(blockIndex, 1 ) % 2 !== 0) { // truong hop 18
         return 'tournamentBorderWrapper_odd_top_lv3_1';
-      } else if ( calcMemberOnRound(blockIndex, 0) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 ) {   //Truong hop 17
+      } else if (calcMemberOnRound(blockIndex, 0) % 2 == 0 && calcMemberOnRound(blockIndex, 1 ) % 2 == 0) { // truong hop 22
+        return 'tournamentBorderWrapper_odd_top_lv3_4';
+      }else if ( calcMemberOnRound(blockIndex, 0) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 ) {   //Truong hop 17
         return 'tournamentBorderWrapper_odd_top_lv3_2';
-      } else if (calcMemberOnRound(blockIndex, 0) % 2 !== 0 && calcMemberOnRound(blockIndex, 1 ) % 2 == 0) {
+      } else if (calcMemberOnRound(blockIndex, 0) % 2 !== 0 && calcMemberOnRound(blockIndex, 1 ) % 2 == 0) {  //truong hop 20
         return 'tournamentBorderWrapper_odd_top_lv3_3';
       }
     }
@@ -430,10 +432,11 @@ const TournamentBracket = () => {
             return 'tournamentBorderWrapper_top_lv4_2';
           } else if (calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 == 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0 ) {
             return 'tournamentBorderWrapper_top_lv4_3';
+          } else if (calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 == 0 && calcMemberOnRound(blockIndex, 0) % 2 == 0 ) {
+            return 'tournamentBorderWrapper_top_lv4_4';
           }
         } 
       }
-
       return 'tournamentBorderWrapper_top';
     } else if ((index+1) % 2 !== 0 && (borderindex + 1 == calcRoundDetail(blockIndex, index)) && index > 0 && membersInOldRound % 2 !== 0 ) {
       if ( index == 2 ) {
@@ -444,7 +447,14 @@ const TournamentBracket = () => {
             return 'tournamentBorderWrapper_bottom_lv3_2';
           }
         } else {
-          return 'tournamentBorderWrapper_bottom_lv3_3';
+          if( calcMemberOnRound(blockIndex, 1) % 2 !== 0 ) {
+            return 'tournamentBorderWrapper_bottom_lv3_3';
+          } 
+          // if( calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 == 0 ) {
+          //   return 'tournamentBorderWrapper_bottom_lv3_3';
+          // } else if ( calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0) {
+          //   return 'tournamentBorderWrapper_bottom_lv3_4';
+          // }
           // if(memberOnRoundOne % 2 !== 0) {
           //   return 'tournamentBorderWrapper_bottom_lv3_3';
           // } else {
@@ -457,15 +467,36 @@ const TournamentBracket = () => {
         //   return 'tournamentBorderWrapper_bottom_lv3_2' ;
         // }
       }
-
-
       return 'tournamentBorderWrapper_bottom';
     } else{
-      if(index == 2 ) {   
-        if (calcMemberOnRound(blockIndex, 2) == 2 && calcMemberOnRound(blockIndex, 1) % 2 == 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0) { // Trường hợp 3 round, round 2 không lẻ, nhưng roud 1 lại lẻ. (round 3 chỉ có 1 cặp cuối)
-          return 'tournamentBorderWrapper_lv3_1';
+      if(index == 2 ) {
+        if (calcMemberOnRound(blockIndex, 2) == 2) { 
+          if (calcMemberOnRound(blockIndex, 1) % 2 == 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0){
+            return 'tournamentBorderWrapper_lv3_1'; // Trường hợp 3 round, round 2 không lẻ, nhưng roud 1 lại lẻ. (round 3 chỉ có 1 cặp cuối)
+          } 
+        } else {
+          if(borderindex == 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0) {
+            return 'tournamentBorderWrapper_lv3_2';
+          }
         }
       } 
+
+      if(index == 3 ) {
+        if (calcMemberOnRound(blockIndex, 3) == 2) { 
+          if ( calcMemberOnRound(blockIndex, 2) % 2 == 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0){
+            return 'tournamentBorderWrapper_lv4_1'; // Trường hợp 3 round, round 2 không lẻ, nhưng roud 1 lại lẻ. (round 3 chỉ có 1 cặp cuối)
+          } else if (calcMemberOnRound(blockIndex, 2) % 2 == 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 == 0) {
+            return 'tournamentBorderWrapper_lv4_2';
+          } else if (calcMemberOnRound(blockIndex, 2) % 2 == 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0) {
+
+          }
+        } else {
+          // if(borderindex == 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0) {
+          //   return 'tournamentBorderWrapper_lv3_2';
+          // }
+        }
+      } 
+
       return 'tournamentBorderWrapper';
     }
   };

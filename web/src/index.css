@@ -145,11 +145,18 @@ button:focus-visible {
 .tournamentBorderWrapper_bottom_lv3_1, 
 .tournamentBorderWrapper_bottom_lv3_2,
 .tournamentBorderWrapper_bottom_lv3_3,
+.tournamentBorderWrapper_bottom_lv3_4,
+
 .tournamentBorderWrapper_top_lv3_1,
 .tournamentBorderWrapper_top_lv4_1,
 .tournamentBorderWrapper_top_lv4_2,
 .tournamentBorderWrapper_top_lv4_3,
-.tournamentBorderWrapper_lv3_1 {
+.tournamentBorderWrapper_top_lv4_4,
+.tournamentBorderWrapper_lv3_1,
+.tournamentBorderWrapper_lv3_2,
+
+.tournamentBorderWrapper_lv4_1,
+.tournamentBorderWrapper_lv4_2 {
   display: flex;
   flex-direction: column;
   /* height: calc(var(--slotHeight) + 10px); */
@@ -203,18 +210,23 @@ button:focus-visible {
 }
 
 .Round-3 .tournamentBorderWrapper_odd_top_lv3_1 {
-  margin-top: 54px;
-  margin-bottom: 118px;
+  margin-top: 117px;
+  margin-bottom: 120px;
 }
 
 .Round-3 .tournamentBorderWrapper_odd_top_lv3_2 {
-  margin-top: 11px;
-  margin-bottom: 104px;
+  margin-top: 74px;
+  margin-bottom: 105px;
 }
 
 .Round-3 .tournamentBorderWrapper_odd_top_lv3_3 {
   margin-top: 76px;
   margin-bottom: 104px;
+}
+
+.Round-3 .tournamentBorderWrapper_odd_top_lv3_4 {
+  margin-top: 118px;
+  margin-bottom: 119px;
 }
 
 .Round-3 .tournamentBorderWrapper_bottom_lv3_1 {
@@ -224,13 +236,19 @@ button:focus-visible {
 
 .Round-3 .tournamentBorderWrapper_bottom_lv3_2 {
   height: 181px;
-  margin-bottom: -31px;
+  margin-bottom: -30px;
 }
 
 .Round-3 .tournamentBorderWrapper_bottom_lv3_3 {
   height: 182px;
+  margin-top: 119px;
+  margin-bottom: 59px;
+}
+
+.Round-3 .tournamentBorderWrapper_bottom_lv3_4 {
+  height: 182px;
   margin-top: 120px;
-  margin-bottom: -5px;
+  margin-bottom: 60px;
 }
 
 .Round-3 .tournamentBorderWrapper_lv3_1 {
@@ -238,9 +256,10 @@ button:focus-visible {
   margin-bottom: 71px;
 }
 
-.Round-3 .tournamentBorderWrapper_lv3_1 {
-  height: calc((var(--slotHeight)) * 3.78);
-  margin-bottom: 71px;
+.Round-3 .tournamentBorderWrapper_lv3_2 {
+  height: 227px;
+  margin-bottom: 120px;
+  margin-top: 75px;
 }
 
 .Round-3 .tournamentBorderWrapper_top_lv3_1 {
@@ -254,13 +273,30 @@ button:focus-visible {
 }
 
 .Round-4 .tournamentBorderWrapper_top_lv4_2 {
-  height: 332px;
-  margin-bottom: 60px;
+  height: 334px;
+  margin-bottom: 61px;
 }
 
 .Round-4 .tournamentBorderWrapper_top_lv4_3 {
   height: 348px;
   margin-bottom: 192px;
+}
+
+.Round-4 .tournamentBorderWrapper_top_lv4_4 {
+  height: 363px;
+  margin-bottom: 150px;
+}
+
+.Round-4 .tournamentBorderWrapper_lv4_1 {
+  height: 446px;
+  margin-bottom: 150px;
+  margin-top: 191px;
+}
+
+.Round-4 .tournamentBorderWrapper_lv4_2 {
+  height: 452px;
+  margin-bottom: 150px;
+  margin-top: 238px;
 }
 
 .Round-2 .tournamentBorderWrapper_top {
@@ -276,7 +312,8 @@ button:focus-visible {
 .tournamentBorderWrapper_odd_bottom,
 .tournamentBorderWrapper_odd_top_lv3_1,
 .tournamentBorderWrapper_odd_top_lv3_2,
-.tournamentBorderWrapper_odd_top_lv3_3 {
+.tournamentBorderWrapper_odd_top_lv3_3,
+.tournamentBorderWrapper_odd_top_lv3_4 {
   display: flex;
   flex-direction: column;
   /* height: calc(var(--slotHeight) + 10px); */
@@ -297,7 +334,8 @@ button:focus-visible {
 .tournamentBorderWrapper_odd_bottom > div,
 .tournamentBorderWrapper_odd_top_lv3_1 > div,
 .tournamentBorderWrapper_odd_top_lv3_2 > div,
-.tournamentBorderWrapper_odd_top_lv3_3 > div {
+.tournamentBorderWrapper_odd_top_lv3_3 > div,
+.tournamentBorderWrapper_odd_top_lv3_4 > div {
   min-height: 10px;
   /* height: 100%; */
 }
@@ -306,11 +344,18 @@ button:focus-visible {
 .tournamentBorderWrapper_bottom_lv3_1 > div, 
 .tournamentBorderWrapper_bottom_lv3_2 > div,
 .tournamentBorderWrapper_bottom_lv3_3 > div,
+.tournamentBorderWrapper_bottom_lv3_4 > div,
+
 .tournamentBorderWrapper_top_lv3_1 > div,
 .tournamentBorderWrapper_top_lv4_1 > div,
 .tournamentBorderWrapper_top_lv4_2 > div,
 .tournamentBorderWrapper_top_lv4_3 > div,
-.tournamentBorderWrapper_lv3_1 > div {
+.tournamentBorderWrapper_top_lv4_4 > div,
+.tournamentBorderWrapper_lv3_1 > div,
+.tournamentBorderWrapper_lv3_2 > div,
+
+.tournamentBorderWrapper_lv4_1 > div,
+.tournamentBorderWrapper_lv4_2 > div {
   min-height: 10px;
   height: 100%;
 }
