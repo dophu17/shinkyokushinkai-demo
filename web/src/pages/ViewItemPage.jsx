@@ -406,7 +406,7 @@ const TournamentBracket = () => {
   }
 
   const getOddClass = (borderIndex, blockIndex, index) => {
-    if ( index == 2 && borderIndex == 0) { // round 3 luon la le
+    if ( index == 2 && borderIndex == 0) { // round 3
       if (calcMemberOnRound(blockIndex, 0) % 2 == 0 && calcMemberOnRound(blockIndex, 1 ) % 2 !== 0) { // truong hop 18
         return 'tournamentBorderWrapper_odd_top_lv3_1';
       } else if (calcMemberOnRound(blockIndex, 0) % 2 == 0 && calcMemberOnRound(blockIndex, 1 ) % 2 == 0) { // truong hop 22
@@ -417,11 +417,23 @@ const TournamentBracket = () => {
         return 'tournamentBorderWrapper_odd_top_lv3_3';
       }
     }
+
+    if ( index == 3 ) {
+      if(calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0 ) {
+        return 'tournamentBorderWrapper_odd_bottom_lv4_1';
+      } else if (calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 == 0 ) {
+        return 'tournamentBorderWrapper_odd_bottom_lv4_2'; //Vong 4 - 34
+      } else if (calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 == 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0 ) {
+        return 'tournamentBorderWrapper_odd_bottom_lv4_3'; //Vong 4 - 37
+      } else if (calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 == 0 && calcMemberOnRound(blockIndex, 0) % 2 == 0 ) {
+        return 'tournamentBorderWrapper_odd_bottom_lv4_4'; //Vong 4 - 38
+      } 
+    }
+
     return borderIndex == 0 ? 'tournamentBorderWrapper_odd_top' : 'tournamentBorderWrapper_odd_bottom' ;
   };
 
   const getClass = (borderindex, index, membersInOldRound, blockIndex) => {
-    let totalRound = blockIndex === 0 ? calcRound(playerBlock1) : calcRound(playerBlock2);
     let memberOnRoundOne = calcMemberOnRound(blockIndex, 0);
     if((index+1) % 2 == 0 && borderindex == 0 && index > 0 && membersInOldRound % 2 !== 0 ) {
       if ( index == 3 ) {
@@ -435,7 +447,17 @@ const TournamentBracket = () => {
           } else if (calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 == 0 && calcMemberOnRound(blockIndex, 0) % 2 == 0 ) {
             return 'tournamentBorderWrapper_top_lv4_4';
           }
-        } 
+        } else {
+          if(calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0 ) {
+            return 'tournamentBorderWrapper_top_lv4_5';
+          } else if (calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 == 0 ) {
+            return 'tournamentBorderWrapper_top_lv4_6';
+          } else if (calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 == 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0 ) {
+            return 'tournamentBorderWrapper_top_lv4_7';
+          } else if (calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 == 0 && calcMemberOnRound(blockIndex, 0) % 2 == 0 ) {
+            return 'tournamentBorderWrapper_top_lv4_8';
+          }
+        }
       }
       return 'tournamentBorderWrapper_top';
     } else if ((index+1) % 2 !== 0 && (borderindex + 1 == calcRoundDetail(blockIndex, index)) && index > 0 && membersInOldRound % 2 !== 0 ) {
@@ -450,23 +472,24 @@ const TournamentBracket = () => {
           if( calcMemberOnRound(blockIndex, 1) % 2 !== 0 ) {
             return 'tournamentBorderWrapper_bottom_lv3_3';
           } 
-          // if( calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 == 0 ) {
-          //   return 'tournamentBorderWrapper_bottom_lv3_3';
-          // } else if ( calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0) {
-          //   return 'tournamentBorderWrapper_bottom_lv3_4';
-          // }
-          // if(memberOnRoundOne % 2 !== 0) {
-          //   return 'tournamentBorderWrapper_bottom_lv3_3';
-          // } else {
-          //   return 'tournamentBorderWrapper_bottom_lv3_4';
-          // }
         }
-        // if(memberOnRoundOne % 2 !== 0 ) {
-        //   return memberOnRoundOne == 5 ? 'tournamentBorderWrapper_bottom_lv3_1' : 'tournamentBorderWrapper_bottom_lv3_3';
-        // } else if (memberOnRoundOne % 2 == 0) {
-        //   return 'tournamentBorderWrapper_bottom_lv3_2' ;
-        // }
       }
+
+      if ( index == 4 ) {
+        if( calcMemberOnRound(blockIndex, 4) == 2 ){
+          if(calcMemberOnRound(blockIndex, 3) % 2 !== 0 && calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0 ) {
+            return 'tournamentBorderWrapper_bottom_lv5_1';
+          } else if(calcMemberOnRound(blockIndex, 3) % 2 !== 0 && calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 == 0  ) {
+            return 'tournamentBorderWrapper_bottom_lv5_2';
+          } else if(calcMemberOnRound(blockIndex, 3) % 2 !== 0 && calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 == 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0  ) {
+            return 'tournamentBorderWrapper_bottom_lv5_3';
+          } else if(calcMemberOnRound(blockIndex, 3) % 2 !== 0 && calcMemberOnRound(blockIndex, 2) % 2 !== 0 && calcMemberOnRound(blockIndex, 1) % 2 == 0 && calcMemberOnRound(blockIndex, 0) % 2 == 0  ) {
+            return 'tournamentBorderWrapper_bottom_lv5_4'; // 38
+          }
+        }
+      }
+
+
       return 'tournamentBorderWrapper_bottom';
     } else{
       if(index == 2 ) {
@@ -477,6 +500,8 @@ const TournamentBracket = () => {
         } else {
           if(borderindex == 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0) {
             return 'tournamentBorderWrapper_lv3_2';
+          } else if(borderindex == 0 && calcMemberOnRound(blockIndex, 1) % 2 == 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0) {
+            return 'tournamentBorderWrapper_lv3_3';
           }
         }
       } 
@@ -487,8 +512,8 @@ const TournamentBracket = () => {
             return 'tournamentBorderWrapper_lv4_1'; // Trường hợp 3 round, round 2 không lẻ, nhưng roud 1 lại lẻ. (round 3 chỉ có 1 cặp cuối)
           } else if (calcMemberOnRound(blockIndex, 2) % 2 == 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 == 0) {
             return 'tournamentBorderWrapper_lv4_2';
-          } else if (calcMemberOnRound(blockIndex, 2) % 2 == 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0) {
-
+          } else if (calcMemberOnRound(blockIndex, 2) % 2 == 0 && calcMemberOnRound(blockIndex, 1) % 2 == 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0) {
+            return 'tournamentBorderWrapper_lv4_3';
           }
         } else {
           // if(borderindex == 0 && calcMemberOnRound(blockIndex, 1) % 2 !== 0 && calcMemberOnRound(blockIndex, 0) % 2 !== 0) {
