@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import {
@@ -22,6 +22,61 @@ const playersData = [
   { name: '中村 颯太', height: 168, weight: 60, branch: '大阪道場', class: '60kg級' },
   { name: '小林 智也', height: 190, weight: 85, branch: '沖縄道場', class: '80kg級' },
 ];
+
+const defaultTeams = [
+  { id: 1, name: 'Team 1', isWinner: false, points: null, status: 'fighting', branch: 1, competitorId: 6 },
+  { id: 2, name: 'Team 2', isWinner: false, points: null, status: 'fighting', branch: 1, competitorId: 5 },
+  { id: 3, name: 'Team 3', isWinner: false, points: null, status: 'fighting', branch: 2, competitorId: 7 },
+  { id: 4, name: 'Team 4', isWinner: false, points: null, status: 'fighting', branch: 2, competitorId: 8 },
+  { id: 5, name: 'Team 5', isWinner: false, points: null, status: 'fighting', branch: 1, competitorId: 2 },
+  { id: 6, name: 'Team 6', isWinner: false, points: null, status: 'fighting', branch: 1, competitorId: 1 },
+  { id: 7, name: 'Team 7', isWinner: false, points: null, status: 'fighting', branch: 2, competitorId: 3 },
+  { id: 8, name: 'Team 8', isWinner: false, points: null, status: 'fighting', branch: 2, competitorId: 4 },
+];
+
+
+// Hàm để đảm bảo mỗi cặp đấu có 1 đội thắng
+const ensureOneWinnerPerPair = (teams) => {
+  for (let i = 0; i < teams.length; i += 2) {
+    const team1 = teams[i];
+    const team2 = teams[i + 1];
+    
+    // Đảm bảo cả hai đội tồn tại
+    if (!team1 || !team2) {
+      if (team1) {
+        team1.isWinner = true;
+      }
+      if (team2) {
+        team2.isWinner = true;
+      }
+      continue;
+    }
+
+    // So sánh điểm và xác định đội thắng
+    if (team1.points > team2.points) {
+      team1.isWinner = true;
+      team2.isWinner = false;
+    } else if (team1.points < team2.points) {
+      team1.isWinner = false;
+      team2.isWinner = true;
+    } else {
+      // Nếu điểm bằng nhau, chọn đội đầu tiên thắng
+      team1.isWinner = true;
+      team2.isWinner = false;
+    }
+  }
+  return teams;
+};
+
+// Add this new function
+const determineRandomWinners = (teams) => {
+  const updatedTeams = teams.map(team => ({
+    ...team,
+    points: Math.floor(Math.random() * 10) + 1, // Random points between 1-10
+    status: 'finished'
+  }));
+  return ensureOneWinnerPerPair(updatedTeams);
+};
 
 // カスタムフィルターコンポーネント - 数値範囲
 const NumberRangeFilter = ({ column }) => {
@@ -247,7 +302,13 @@ const DraggablePlayer = ({ player, index, isPlaced = false, fromBracket = false 
   );
 };
 
-const BracketSlot = ({ onDrop, player, index, onRemove, classNameCustom }) => {
+const getPlayerForBranch = (brackets, blockIndex, playerBlock1, index) => {
+  let list = [];
+  list = blockIndex === 0 ? brackets[index] : brackets[playerBlock1 + index];
+  return list;
+}
+
+const BracketSlot = ({ onDrop, player, index, onRemove, classNameCustom, branch1, branch2 }) => {
   const [{ isOver }, drop] = useDrop(() => ({
     accept: ItemTypes.PLAYER,
     drop: (item) => onDrop(item, index),
@@ -282,7 +343,7 @@ const BracketSlot = ({ onDrop, player, index, onRemove, classNameCustom }) => {
           </div>
         </div>
       ) : (
-        <span className="text-gray-400">未設定</span>
+        <span className="text-gray-400">{player?.name ?? '未設定'}</span>
       )}
     </div>
   );
@@ -300,6 +361,17 @@ const TournamentBracket = () => {
     }
     return initialBrackets;
   });
+  const [branch1, setBranch1] = useState(() => {
+    let newBranch1 = [];
+    newBranch1['round1'] = defaultTeams.filter(item => item.branch === 1);
+    return newBranch1;
+  });
+  const [branch2, setBranch2] = useState(() => {
+    let newBranch2 = [];
+    newBranch2['round1'] = defaultTeams.filter(item => item.branch === 2);
+    return newBranch2;
+  });
+  const [final, setFinal] = useState([]);
 
   // スロット数変更時の処理
   const handlePlayerCountChange = (e) => {
@@ -311,12 +383,52 @@ const TournamentBracket = () => {
     setPlayerBlock2(oddCondition ? newCount - _playerBlock1 - 1 : newCount - _playerBlock1);
 
     // bracketsを新しい数で初期化
-    const newBrackets = {};
+    const newBrackets = [];
     for (let i = 0; i < newCount; i++) {
       newBrackets[i] = null;
     }
-    setBrackets(newBrackets);
+    setBrackets(defaultTeams);
     setPlacedPlayers(new Set()); // 配置済みプレイヤーもリセット
+
+    
+    
+    setTimeout(() => {
+      //set round 1
+      let branch1 = [];
+      let branch2 = [];
+      let final = [];
+      branch1['round1'] = [
+        { id: 1, name: 'Team 1', isWinner: true, points: 10, status: 'finished', branch: 1, competitorId: 6 },
+        { id: 2, name: 'Team 2', isWinner: false, points: 9, status: 'finished', branch: 1, competitorId: 5 },
+        { id: 5, name: 'Team 5', isWinner: true, points: 2, status: 'finished', branch: 1, competitorId: 2 },
+        { id: 6, name: 'Team 6', isWinner: false, points: 1, status: 'finished', branch: 1, competitorId: 1 },
+      ]
+      branch2['round1'] = [
+        { id: 3, name: 'Team 3', isWinner: false, points: 5, status: 'finished', branch: 2, competitorId: 7 },
+        { id: 4, name: 'Team 4', isWinner: true, points: 7, status: 'finished', branch: 2, competitorId: 8 },
+        { id: 7, name: 'Team 7', isWinner: true, points: 6, status: 'finished', branch: 2, competitorId: 3 },
+        { id: 8, name: 'Team 8', isWinner: false, points: 5, status: 'finished', branch: 2, competitorId: 4 },
+      ]
+      //set round 2
+      branch1['round2'] = [
+        { id: 1, name: 'Team 1', isWinner: true, points: 9, status: 'finished', branch: 1, competitorId: 6 },
+        { id: 5, name: 'Team 5', isWinner: false, points: 8, status: 'finished', branch: 1, competitorId: 2 },
+      ]
+      branch2['round2'] = [
+        { id: 4, name: 'Team 4', isWinner: false, points: 2, status: 'finished', branch: 2, competitorId: 8 },
+        { id: 7, name: 'Team 7', isWinner: true, points: 6, status: 'finished', branch: 2, competitorId: 3 },
+      ]
+      //set final
+      final = [
+        { id: 1, name: 'Team 1', isWinner: true, points: 7, status: 'finished', branch: 1, competitorId: 6 },
+        { id: 7, name: 'Team 7', isWinner: false, points: 4, status: 'finished', branch: 2, competitorId: 3 },
+      ]
+      setBranch1(branch1)
+      setBranch2(branch2)
+      setFinal(final)
+      console.log('branch1', branch1)
+      console.log('branch2', branch2)
+    }, 100);
   };
 
   // プレイヤーの配置状態を管理
@@ -501,6 +613,9 @@ const TournamentBracket = () => {
     }
   };
 
+  useEffect(() => {
+    console.log('branch1 state updated:', branch1);
+  }, [branch1]);
 
   return (
     <div className="p-4">
@@ -532,7 +647,7 @@ const TournamentBracket = () => {
                   {Array.from({ length: blockIndex === 0 ? playerBlock1 : playerBlock2 }, (_, index) => (
                     <BracketSlot
                       key={`bracket-${blockIndex + index}`}
-                      player={brackets[blockIndex + index]}
+                      player={blockIndex === 0 ? branch1['round1'][index] : branch2['round1'][index]}
                       index={blockIndex + index}
                       onDrop={handleDrop}
                       onRemove={handleRemovePlayer}
@@ -562,6 +677,16 @@ const TournamentBracket = () => {
                     className={`tournamentRound flex justify-cente flex-col Round-${index + 1}`}
                   >
                     {Array.from({ length: calcRoundDetail(blockIndex, index) }, (_, borderindex) => {
+                      let indexPlayer = (borderindex < 1) ? borderindex : (borderindex * 2);
+                      // var player1 = getPlayerForBranch(brackets, blockIndex, playerBlock1, indexPlayer);
+                      // var player2 = getPlayerForBranch(brackets, blockIndex, playerBlock1, indexPlayer + 1);
+                      var player1 = null;
+                      var player2 = null;
+                      if (branch1[`round${index + 1}`]) {
+                        player1 = blockIndex === 0 ? branch1['round1'][indexPlayer] : branch2['round1'][indexPlayer];
+                        player2 = blockIndex === 0 ? branch1['round1'][indexPlayer + 1] : branch2['round1'][indexPlayer + 1];
+                      }
+                      
                       return (
                         //  <div key={`round-${index}-${borderindex}`} className={`tournamentBorderWrapper_odd ${(index > 0 && calcMemberOnRound(blockIndex, index) % 2 !== 0) ? '!h-[2px]' : ''}`}>
                         //     <div className="tournamentOdd">
@@ -576,8 +701,8 @@ const TournamentBracket = () => {
                         </div>
                       ) : ( 
                       <div key={`round-${index}-${borderindex}`} className={`${getClass(borderindex, index, membersInOldRound, blockIndex)}`}>
-                        <div className="tournamentBorder tournamentBorder_top"></div>
-                        <div className="tournamentBorder tournamentBorder_buttom"></div>
+                        <div className={`tournamentBorder tournamentBorder_top ${player1?.isWinner ? 'line-win' : ''}`} item={player1?.name}></div>
+                        <div className={`tournamentBorder tournamentBorder_buttom ${player2?.isWinner ? 'line-win' : ''}`} item={player2?.name}></div>
                       </div> )
                     )})}
                   </div>

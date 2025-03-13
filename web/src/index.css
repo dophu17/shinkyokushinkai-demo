@@ -364,9 +364,15 @@ button:focus-visible {
   border-top: 2px solid #000;
   border-right: 2px solid #000;
 }
+.tournamentBorder_top.line-win {
+  border-color: blue;
+}
 .tournamentBorder_buttom {
   border-bottom: 2px solid #000;
   border-right: 2px solid #000;
+}
+.tournamentBorder_buttom.line-win {
+  border-color: blue;
 }
 .tournamentBorder_center::before {
   content: "";
