@@ -13,14 +13,20 @@ const ItemTypes = {
 };
 
 const playersData = [
-  { name: '佐藤 翔太', height: 175, weight: 70, branch: '東京道場', class: '70kg級' },
-  { name: '鈴木 健一', height: 180, weight: 75, branch: '大阪道場', class: '80kg級' },
-  { name: '高橋 悠人', height: 170, weight: 65, branch: '名古屋道場', class: '60kg級' },
-  { name: '田中 直樹', height: 185, weight: 80, branch: '福岡道場', class: '80kg級' },
-  { name: '伊藤 陽介', height: 178, weight: 72, branch: '札幌道場', class: '70kg級' },
-  { name: '山本 拓真', height: 182, weight: 78, branch: '東京道場', class: '80kg級' },
-  { name: '中村 颯太', height: 168, weight: 60, branch: '大阪道場', class: '60kg級' },
-  { name: '小林 智也', height: 190, weight: 85, branch: '沖縄道場', class: '80kg級' },
+  { id: 1, name: '佐藤 翔太', height: 175, weight: 70, branch: '東京道場', class: '70kg級' },
+  { id: 2, name: '鈴木 健一', height: 180, weight: 75, branch: '大阪道場', class: '80kg級' },
+  { id: 3, name: '高橋 悠人', height: 170, weight: 65, branch: '名古屋道場', class: '60kg級' },
+  { id: 4, name: '田中 直樹', height: 185, weight: 80, branch: '福岡道場', class: '80kg級' },
+  { id: 5, name: '伊藤 陽介', height: 178, weight: 72, branch: '札幌道場', class: '70kg級' },
+  { id: 6, name: '山本 拓真', height: 182, weight: 78, branch: '東京道場', class: '80kg級' },
+  { id: 7, name: '中村 颯太', height: 168, weight: 60, branch: '大阪道場', class: '60kg級' },
+  { id: 8, name: '小林 智也', height: 190, weight: 85, branch: '沖縄道場', class: '80kg級' },
+
+  { id: 9, name: '小林 智也1', height: 190, weight: 85, branch: '沖縄道場', class: '80kg級' },
+  { id: 10, name: '小林 智也2', height: 190, weight: 85, branch: '沖縄道場', class: '80kg級' },
+  { id: 11, name: '小林 智也3', height: 190, weight: 85, branch: '沖縄道場', class: '80kg級' },
+  { id: 12, name: '小林 智也4', height: 190, weight: 85, branch: '沖縄道場', class: '80kg級' },
+  { id: 13, name: '小林 智也5', height: 190, weight: 85, branch: '沖縄道場', class: '80kg級' },
 ];
 
 // カスタムフィルターコンポーネント - 数値範囲
@@ -216,7 +222,7 @@ const DraggableTableRow = ({ row, placedPlayers }) => {
   );
 };
 
-const DraggablePlayer = ({ player, index, isPlaced = false, fromBracket = false }) => {
+const DraggablePlayer = ({ player, index, isPlaced = false, fromBracket = false, isStart = false }) => {
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.PLAYER,
     item: () => ({
@@ -232,9 +238,9 @@ const DraggablePlayer = ({ player, index, isPlaced = false, fromBracket = false 
   return (
     <div
       ref={drag}
-      className={`p-2 border rounded shadow 
+      className={` border rounded shadow 
         ${isDragging ? 'opacity-50' : ''} 
-        ${isPlaced ? 'bg-gray-200' : 'bg-white'} 
+        ${isPlaced || !isStart ? 'bg-gray-200' : 'bg-white'} 
         cursor-move w-full`}
     >
       <div className="font-bold">{player.name}</div>
@@ -247,7 +253,7 @@ const DraggablePlayer = ({ player, index, isPlaced = false, fromBracket = false 
   );
 };
 
-const BracketSlot = ({ onDrop, player, index, onRemove, classNameCustom }) => {
+const BracketSlot = ({ onDrop, player, index, onRemove, classNameCustom, isStart = false }) => {
   const [{ isOver }, drop] = useDrop(() => ({
     accept: ItemTypes.PLAYER,
     drop: (item) => onDrop(item, index),
@@ -260,7 +266,8 @@ const BracketSlot = ({ onDrop, player, index, onRemove, classNameCustom }) => {
   return (
     <div
       ref={drop}
-      className={`slotWrapper p-2 border rounded ${isOver ? 'bg-gray-100' : 'bg-white'} ${classNameCustom}`}
+      className={`slotWrapper p-2 border ${!isOver || !isStart ? 'bg-white' : 'bg-gray-100'} ${classNameCustom}` }
+        style={{ pointerEvents: isStart ? 'none' : 'auto' }}
     >
       {player ? (
         <div className="flex items-center justify-between gap-2">
@@ -269,9 +276,10 @@ const BracketSlot = ({ onDrop, player, index, onRemove, classNameCustom }) => {
             index={index}
             isPlaced={true}
             fromBracket={true}
+            isStart={isStart}
           />
           <div className="flex flex-col gap-2">
-            {onRemove && (
+            {onRemove && !isStart && (
               <span
                 className="text-red-500 text-sm cursor-pointer remove"
                 onClick={() => onRemove(index)}
@@ -300,6 +308,8 @@ const TournamentBracket = () => {
     }
     return initialBrackets;
   });
+  const [isStart, setIsStart] = useState(false);
+  
 
   // スロット数変更時の処理
   const handlePlayerCountChange = (e) => {
@@ -361,6 +371,7 @@ const TournamentBracket = () => {
 
   // 解除ボタン押下時の処理
   const handleRemovePlayer = (bracketIndex) => {
+    console.log("nhay vao day de xoa:")
     setBrackets(prevBrackets => {
       const newBrackets = { ...prevBrackets };
       const removedPlayer = newBrackets[bracketIndex];
@@ -526,6 +537,162 @@ const TournamentBracket = () => {
     }
   };
 
+  const [score, setScore] = useState([]);
+  const [curentRound, setCurentRound] = useState(1);
+
+  const saveData = () => {
+    const hasNullValues = Object.values(brackets).some(item => item === null);
+    if (hasNullValues) {
+      return;
+    }
+    const newBrackets = Object.fromEntries(
+      Object.entries(brackets).map(([key, value]) => [
+        key,
+        { ...value, isLose: false }, // Thêm thuộc tính isLose
+      ])
+    );
+
+    setBrackets(newBrackets);
+
+    const allPlayer = Object.values(brackets); // Lấy tất cả các giá trị từ brackets
+    let roundIndex = 0;
+    pairing(roundIndex, allPlayer); // phân cặp đấu
+    setSelectedOption(Object.values(brackets)[0]);
+
+    setIsStart(true);
+  }
+
+
+  
+  const [selectedOption, setSelectedOption] = useState({});
+
+  const [scoreMember1, setScoreMember1] = useState(0);
+  const [scoreMember2, setScoreMember2] = useState(0);
+
+//   const score = [
+//   { round: 1, playerId1: 1, playerId2: 2, score1: 2, score1: 3},
+// ]
+
+  const pairing = (roundIndex,  allPlayer) => {
+    for (let i = 0; i < 2; i ++) {   //Lọc qua 2 block
+      let playerArray = [];
+      let memberOnRound =  calcMemberOnRound(i, roundIndex);
+      playerArray = i ==0 ?  allPlayer.slice(0, memberOnRound).map(item => item.id) : allPlayer.slice(memberOnRound +1).map(item => item.id);
+
+      if(memberOnRound % 2 == 0) {
+        for (let j = 0; j < memberOnRound; j += 2) {
+          doPairing(roundIndex, playerArray[j], playerArray[j + 1]);
+        }
+      } else {
+        if((roundIndex+1) % 2 !== 0) {
+          doPairing(roundIndex, playerArray[0], null);
+          for (let j = 1; j < memberOnRound; j += 2) {
+            doPairing(roundIndex, playerArray[j], playerArray[j + 1]);
+          }
+        } else {
+          for (let j = 0; j < memberOnRound-1; j += 2) {
+            doPairing(roundIndex, playerArray[j], playerArray[j + 1]);
+          }
+          doPairing(roundIndex, playerArray[memberOnRound], null);
+        }
+      }
+    }
+  } 
+
+
+  const doPairing = (round,  playerId1, playerId2) => {
+    const newScore = { round: round, playerId1: playerId1, playerId2: playerId2, score1: null, score2: null };
+    setScore(prevScores => [...prevScores, newScore]);
+  } 
+
+  // const updateScore = (round,  playerId1, playerId2, score1, score1) => {
+      
+  // }
+
+  const updateScore = () => {
+      console.log("Kiem tra cap dau: ", score);
+      setScore(prevScores => {
+        // // Tìm đối tượng có round lớn nhất
+        // const maxRoundScore = prevScores.reduce((max, current) => {
+        //   return (current.round > max.round) ? current : max; // So sánh để tìm round lớn nhất
+        // }, prevScores[0]); // Khởi tạo với phần tử đầu tiên
+        // maxRound = maxRoundScore;
+        // Cập nhật score1 và score2 cho đối tượng có round lớn nhất
+        return prevScores.map(s => {
+          if (s.round === curentRound && s.playerId1 === selectedOption.id || s.playerId2 === selectedOption.id) {
+            let _score1 = 0;
+            let _score2 = 0;
+            if(s.playerId1 === selectedOption.id) {
+             _score1 = scoreMember1;
+             _score2 = scoreMember2;
+            } else {
+             _score1 = scoreMember2;
+             _score2 = scoreMember1;
+            }
+            return { ...s, score1: _score1, score2: _score2 }; // Cập nhật score1 và score2
+          }
+          return s;
+        });
+      });
+      
+      //Nếu toàn bộ người chơi trong round dã được cập nhật => gộp mới số người còn lai.
+      if(!checkOpenNewRound()){
+        let nextRound = curentRound+1;
+        setCurentRound(nextRound);
+        let playerArray = [];
+
+        for (let i = 0; i < score.length; i++) {
+          const s = score[i];
+          
+          // Kiểm tra round hiện tại
+          if (s.round === nextRound-1) {
+            // Nếu playerId2 là null
+            if (s.playerId2 === null) {
+              playerArray.push(s.playerId1);
+            }
+            
+            // Nếu score1 > score2
+            if (s.score1 !== null && s.score2 !== null) {
+              if (s.score1 > s.score2) {
+                playerArray.push(s.playerId1);
+              } else {
+                playerArray.push(s.playerId2);
+              }
+            }
+          }
+        }
+        pairing(nextRound-1, playerArray);
+      }
+  }
+
+  const checkOpenNewRound = () => {
+    return score.some(s => 
+      s.round === curentRound && 
+      s.playerId1 !== null && 
+      s.playerId2 !== null && 
+      (s.score1 == null && 
+      s.score2 == null)
+    );
+  };
+
+  const handleChange1 = (e) => {
+    setScoreMember1(e.target.value);
+  };
+
+  const handleChange2 = (e) => {
+    setScoreMember2(e.target.value);
+  };
+
+
+  const handleChange = (e) => {
+    const selectedValue = e.target.value;
+    const selectedOption = Object.values(brackets).find(option => option.id == selectedValue);
+    setSelectedOption(selectedOption);
+  };
+
+  const getNumberOfPeopleRemaining = (e) => {   //thay the select bang thg nay
+    return Object.values(brackets).filter(option => option && option.isLose === false);
+  };
 
   return (
     <div className="p-4">
@@ -541,6 +708,45 @@ const TournamentBracket = () => {
             onChange={handlePlayerCountChange}
             className="border rounded p-1 w-24"
           />
+
+          <button onClick={() => saveData()} className="ml-3">Save</button>
+
+          {
+            isStart && (
+              <div>
+                
+                <label htmlFor="select" className="mr-2">Vòng đấu: {curentRound}</label>
+                <label htmlFor="select">Chọn VĐV:</label>
+                <select id="select" value={selectedOption.id} onChange={handleChange}>
+                  {Object.values(brackets).filter(option => option && option.isLose === false).map((option) => (
+                    <option key={option.id} value={option.id}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
+
+                <label htmlFor="scoreMember1" className="ml-2">Điểm cho {selectedOption.name}</label>
+                <input
+                  id="scoreMember1"
+                  type="number"
+                  value={scoreMember1}
+                  onChange={handleChange1}
+                  className="border rounded p-1 w-24"
+                />
+
+                <label htmlFor="scoreMember2" className="ml-2">Điểm người còn lại</label>
+                <input
+                  id="scoreMember2"
+                  type="number"
+                  value={scoreMember2}
+                  onChange={handleChange2}
+                  className="border rounded p-1 w-24"
+                />
+
+                <button onClick={() => updateScore()} className="ml-3">Cập nhật KQ</button>
+              </div>
+            )
+          }
         </div>
 
         <h2 className="text-xl font-bold my-4">トーナメント表</h2>
@@ -556,11 +762,12 @@ const TournamentBracket = () => {
                 <div className="flex justify-between flex-col">
                   {Array.from({ length: blockIndex === 0 ? playerBlock1 : playerBlock2 }, (_, index) => (
                     <BracketSlot
-                      key={`bracket-${blockIndex + index}`}
-                      player={brackets[blockIndex + index]}
-                      index={blockIndex + index}
+                      key={`bracket-${ blockIndex === 0 ? index : playerBlock1 + index}`}
+                      player={brackets[blockIndex === 0 ? index : playerBlock1 + index]}
+                      index={blockIndex === 0 ? index : playerBlock1 + index}
                       onDrop={handleDrop}
                       onRemove={handleRemovePlayer}
+                      isStart={isStart}
                       // classNameCustom={ index == 0 && checkOddMember(blockIndex) ? 'odd-member-css' : ''}
                     />
                   ))}
@@ -608,10 +815,32 @@ const TournamentBracket = () => {
                   </div>
                 )})}
               </div>
-              {/* <div className={`
-                blockWiner tournamentBorder
-                ${[32, 64].includes(playerCount) ? 'tournamentBorder__RightNone' : ''}
-              `}></div> */}
+              <div className={`
+                blockWiner tournamentBorder}
+              `}> 
+              {blockIndex == 1 && (<div className="outer-div"> 
+                <div className="inner-div bg-white text-center">WINNER</div></div>)}
+              </div>
+              {/* { blockIndex == 0 && (
+                <div>
+                  <div className={`
+                  blockWiner tournamentBorder}
+                `}></div>
+              <div class="outer-div">
+                <div class="inner-div">Xin chào</div>
+              </div>
+                </div>
+                
+
+              ) }
+              { blockIndex == 1 && (
+                <div>
+                  
+                </div>
+                
+
+              ) } */}
+              
             </div>
           ))}
         </div>

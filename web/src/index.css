@@ -86,14 +86,15 @@ button:focus-visible {
   min-width: 50px;
   height: 50%;
   margin-top: auto;
-  border-top: 2px solid #000;
-  border-right: 2px solid #000;
+  border-top: 2px solid #d1d1d1; 
+  /* border-top: 2px solid #000; */
+  /* border-right: 2px solid #000; */
 }
 .blockWiner.tournamentBorder__RightNone {
   border-right: none;
 }
 .tournamentBlockWrapper__65-128 .blockWiner {
-  margin-top: 0;
+  margin-top: 2px;
   margin-bottom: auto;
   transform: scale(1, -1);
 }
@@ -475,13 +476,22 @@ button:focus-visible {
 }
 
 .tournamentBorder_top {
+  border-top: 2px solid #d1d1d1;
+  border-right: 2px solid #d1d1d1;
+}
+.tournamentBorder_buttom {
+  border-bottom: 2px solid #d1d1d1;
+  border-right: 2px solid #d1d1d1;
+}
+
+/* .tournamentBorder_top {
   border-top: 2px solid #000;
   border-right: 2px solid #000;
 }
 .tournamentBorder_buttom {
   border-bottom: 2px solid #000;
   border-right: 2px solid #000;
-}
+} */
 .tournamentBorder_center::before {
   content: "";
   height: 2px;
@@ -514,7 +524,24 @@ button:focus-visible {
 }
 .hr-divider {
   border: none;
-  background-color: #000;
+  background-color: #d1d1d1;
+  /* background-color: #000; */
   height: 2px;
   width: 100%;
+}
+
+.outer-div {
+  position: relative; 
+  height: 200px; 
+  overflow: visible; 
+}
+
+.inner-div {
+  width: 150px;
+  position: absolute; 
+  transform: translate(-75px, -50%) scale(1, 1);
+  border-width: 5px;
+  z-index: 1; 
+  padding: 10px; 
+  
 }
