@@ -701,8 +701,14 @@ const TournamentBracket = () => {
                         </div>
                       ) : ( 
                       <div key={`round-${index}-${borderindex}`} className={`${getClass(borderindex, index, membersInOldRound, blockIndex)}`}>
-                        <div className={`tournamentBorder tournamentBorder_top ${player1?.isWinner ? 'line-win' : ''}`} item={player1?.name}></div>
-                        <div className={`tournamentBorder tournamentBorder_buttom ${player2?.isWinner ? 'line-win' : ''}`} item={player2?.name}></div>
+                        
+                        <div className={`tournamentBorder tournamentBorder_top ${player1?.isWinner ? 'line-win' : 'line-close'}`} item={player1?.name}>
+                          <div className={`content-points ${blockIndex === 1 ? 'right' : 'left'}`}>{player1?.points}</div>
+                        </div>
+                        
+                        <div className={`tournamentBorder tournamentBorder_buttom ${player2?.isWinner ? 'line-win' : 'line-close'}`} item={player2?.name}>
+                          <div className={`content-points ${blockIndex === 1 ? 'right' : 'left'}`}>{player2?.points}</div>
+                        </div>
                       </div> )
                     )})}
                   </div>

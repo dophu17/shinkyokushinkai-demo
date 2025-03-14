@@ -367,12 +367,22 @@ button:focus-visible {
 .tournamentBorder_top.line-win {
   border-color: blue;
 }
+.tournamentBorder .content-points.left {
+  margin-left: 56px;
+}
+.tournamentBorder .content-points.right {
+  transform: scale(-1, 1);
+  margin-left: 66px;
+}
 .tournamentBorder_buttom {
   border-bottom: 2px solid #000;
   border-right: 2px solid #000;
 }
 .tournamentBorder_buttom.line-win {
   border-color: blue;
+}
+.tournamentBorder.line-win .content-points {
+  color: blue;
 }
 .tournamentBorder_center::before {
   content: "";
