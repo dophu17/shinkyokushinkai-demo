@@ -90,6 +90,9 @@ button:focus-visible {
   /* border-top: 2px solid #000; */
   /* border-right: 2px solid #000; */
 }
+.blockWiner.line-win {
+  border-color: blue;
+}
 .blockWiner.tournamentBorder__RightNone {
   border-right: none;
 }
@@ -97,6 +100,9 @@ button:focus-visible {
   margin-top: 2px;
   margin-bottom: auto;
   transform: scale(1, -1);
+}
+.tournamentBlockWrapper__65-128 .blockWiner.line-win {
+  border-color: blue;
 }
 .tournamentBlockWrapper__even.tournamentBlockWrapper__65-128 .blockWiner {
   transform: scale(-1, -1);
@@ -497,6 +503,16 @@ button:focus-visible {
 .tournamentBorder .content-points.right {
   transform: scale(-1, 1);
   margin-left: 66px;
+}
+.content-points-final.left {
+  text-align: center;
+  transform: scale(1, -1);
+}
+.content-points-final.right {
+  text-align: center;
+  transform: scale(1, 1);
+  position: relative;
+  top: -25px;
 }
 .tournamentBorder_buttom {
   border-bottom: 2px solid #000;

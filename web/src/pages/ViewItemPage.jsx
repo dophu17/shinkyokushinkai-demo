@@ -398,31 +398,38 @@ const TournamentBracket = () => {
     
     
     setTimeout(() => {
-      //set round 1
+      //set round
       let branch1 = [];
       let branch2 = [];
       let final = [];
-      branch1['round1'] = [
-        { id: 1, name: 'Team 1', isWinner: true, points: 10, status: 'finished', branch: 1, competitorId: 6 },
-        { id: 2, name: 'Team 2', isWinner: false, points: 9, status: 'finished', branch: 1, competitorId: 5 },
-        { id: 5, name: 'Team 5', isWinner: true, points: 2, status: 'finished', branch: 1, competitorId: 2 },
-        { id: 6, name: 'Team 6', isWinner: false, points: 1, status: 'finished', branch: 1, competitorId: 1 },
-      ]
-      branch2['round1'] = [
-        { id: 3, name: 'Team 3', isWinner: false, points: 5, status: 'finished', branch: 2, competitorId: 7 },
-        { id: 4, name: 'Team 4', isWinner: true, points: 7, status: 'finished', branch: 2, competitorId: 8 },
-        { id: 7, name: 'Team 7', isWinner: true, points: 6, status: 'finished', branch: 2, competitorId: 3 },
-        { id: 8, name: 'Team 8', isWinner: false, points: 5, status: 'finished', branch: 2, competitorId: 4 },
-      ]
-      //set round 2
-      branch1['round2'] = [
-        { id: 1, name: 'Team 1', isWinner: true, points: 9, status: 'finished', branch: 1, competitorId: 6 },
-        { id: 5, name: 'Team 5', isWinner: false, points: 8, status: 'finished', branch: 1, competitorId: 2 },
-      ]
-      branch2['round2'] = [
-        { id: 4, name: 'Team 4', isWinner: false, points: 2, status: 'finished', branch: 2, competitorId: 8 },
-        { id: 7, name: 'Team 7', isWinner: true, points: 6, status: 'finished', branch: 2, competitorId: 3 },
-      ]
+      let countRound = Math.log2(defaultTeams.length) - 1;
+      for (let index = 0; index < countRound; index++) {
+        let roundName = `round${index+1}`;
+        if (roundName === 'round1') {
+          branch1['round1'] = [
+            { id: 1, name: 'Team 1', isWinner: true, points: 10, status: 'finished', branch: 1, competitorId: 6 },
+            { id: 2, name: 'Team 2', isWinner: false, points: 9, status: 'finished', branch: 1, competitorId: 5 },
+            { id: 5, name: 'Team 5', isWinner: true, points: 2, status: 'finished', branch: 1, competitorId: 2 },
+            { id: 6, name: 'Team 6', isWinner: false, points: 1, status: 'finished', branch: 1, competitorId: 1 },
+          ]
+          branch2['round1'] = [
+            { id: 3, name: 'Team 3', isWinner: false, points: 5, status: 'finished', branch: 2, competitorId: 7 },
+            { id: 4, name: 'Team 4', isWinner: true, points: 7, status: 'finished', branch: 2, competitorId: 8 },
+            { id: 7, name: 'Team 7', isWinner: true, points: 6, status: 'finished', branch: 2, competitorId: 3 },
+            { id: 8, name: 'Team 8', isWinner: false, points: 5, status: 'finished', branch: 2, competitorId: 4 },
+          ]
+        }
+        if (roundName === 'round2') {
+          branch1['round2'] = [
+            { id: 1, name: 'Team 1', isWinner: true, points: 9, status: 'finished', branch: 1, competitorId: 6 },
+            { id: 5, name: 'Team 5', isWinner: false, points: 8, status: 'finished', branch: 1, competitorId: 2 },
+          ]
+          branch2['round2'] = [
+            { id: 4, name: 'Team 4', isWinner: false, points: 2, status: 'finished', branch: 2, competitorId: 8 },
+            { id: 7, name: 'Team 7', isWinner: true, points: 6, status: 'finished', branch: 2, competitorId: 3 },
+          ]
+        }
+      }
       //set final
       final = [
         { id: 1, name: 'Team 1', isWinner: true, points: 7, status: 'finished', branch: 1, competitorId: 6 },
@@ -943,11 +950,14 @@ const TournamentBracket = () => {
                 )})}
               </div>
               <div className={`
-                blockWiner tournamentBorder}
+                blockWiner tournamentBorder} ${blockIndex === 0 && final[0]?.isWinner ? 'line-win' : 'line-close'}
               `}> 
               {blockIndex == 1 && (<div className="outer-div"> 
-                <div className="inner-div bg-white text-center">WINNER</div></div>)}
-              </div>
+                
+                <div className="inner-div bg-white text-center">WINNER</div>
+                <div className={`content-points-final right`}>{final[1]?.points}</div>
+                </div>)}
+                <div className={`content-points-final left`}>{final[0]?.points}</div></div>
               {/* { blockIndex == 0 && (
                 <div>
                   <div className={`
