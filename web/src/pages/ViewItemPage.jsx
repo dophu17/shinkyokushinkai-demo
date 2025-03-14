@@ -84,6 +84,28 @@ const determineRandomWinners = (teams) => {
   return ensureOneWinnerPerPair(updatedTeams);
 };
 
+// Add new function to arrange teams based on id and competitorId
+const arrangeTeamsByCompetitor = (teams) => {
+  const arrangedTeams = [];
+  const processedIds = new Set();
+
+  teams.forEach(team => {
+    // Skip if this team has already been processed
+    if (processedIds.has(team.id)) return;
+
+    // Find the matching competitor
+    const competitor = teams.find(t => t.id === team.competitorId);
+    if (competitor) {
+      arrangedTeams.push(team);
+      arrangedTeams.push(competitor);
+      processedIds.add(team.id);
+      processedIds.add(competitor.id);
+    }
+  });
+
+  return arrangedTeams;
+};
+
 // カスタムフィルターコンポーネント - 数値範囲
 const NumberRangeFilter = ({ column }) => {
   return (
@@ -406,34 +428,34 @@ const TournamentBracket = () => {
       for (let index = 0; index < countRound; index++) {
         let roundName = `round${index+1}`;
         if (roundName === 'round1') {
-          branch1['round1'] = [
+          branch1['round1'] = arrangeTeamsByCompetitor([
             { id: 1, name: 'Team 1', isWinner: true, points: 10, status: 'finished', branch: 1, competitorId: 6 },
             { id: 2, name: 'Team 2', isWinner: false, points: 9, status: 'finished', branch: 1, competitorId: 5 },
             { id: 5, name: 'Team 5', isWinner: true, points: 2, status: 'finished', branch: 1, competitorId: 2 },
             { id: 6, name: 'Team 6', isWinner: false, points: 1, status: 'finished', branch: 1, competitorId: 1 },
-          ]
-          branch2['round1'] = [
+          ])
+          branch2['round1'] = arrangeTeamsByCompetitor([
             { id: 3, name: 'Team 3', isWinner: false, points: 5, status: 'finished', branch: 2, competitorId: 7 },
             { id: 4, name: 'Team 4', isWinner: true, points: 7, status: 'finished', branch: 2, competitorId: 8 },
             { id: 7, name: 'Team 7', isWinner: true, points: 6, status: 'finished', branch: 2, competitorId: 3 },
             { id: 8, name: 'Team 8', isWinner: false, points: 5, status: 'finished', branch: 2, competitorId: 4 },
-          ]
+          ])
         }
         if (roundName === 'round2') {
           branch1['round2'] = [
-            { id: 1, name: 'Team 1', isWinner: true, points: 9, status: 'finished', branch: 1, competitorId: 6 },
-            { id: 5, name: 'Team 5', isWinner: false, points: 8, status: 'finished', branch: 1, competitorId: 2 },
+            { id: 1, name: 'Team 1', isWinner: true, points: 9, status: 'finished', branch: 1, competitorId: 5 },
+            { id: 5, name: 'Team 5', isWinner: false, points: 8, status: 'finished', branch: 1, competitorId: 1 },
           ]
           branch2['round2'] = [
-            { id: 4, name: 'Team 4', isWinner: false, points: 2, status: 'finished', branch: 2, competitorId: 8 },
-            { id: 7, name: 'Team 7', isWinner: true, points: 6, status: 'finished', branch: 2, competitorId: 3 },
+            { id: 4, name: 'Team 4', isWinner: false, points: 2, status: 'finished', branch: 2, competitorId: 7 },
+            { id: 7, name: 'Team 7', isWinner: true, points: 6, status: 'finished', branch: 2, competitorId: 4 },
           ]
         }
       }
       //set final
       final = [
-        { id: 1, name: 'Team 1', isWinner: true, points: 7, status: 'finished', branch: 1, competitorId: 6 },
-        { id: 7, name: 'Team 7', isWinner: false, points: 4, status: 'finished', branch: 2, competitorId: 3 },
+        { id: 1, name: 'Team 1', isWinner: true, points: 7, status: 'finished', branch: 1, competitorId: 7 },
+        { id: 7, name: 'Team 7', isWinner: false, points: 4, status: 'finished', branch: 2, competitorId: 1 },
       ]
       setBranch1(branch1)
       setBranch2(branch2)
