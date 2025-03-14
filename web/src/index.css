@@ -86,14 +86,15 @@ button:focus-visible {
   min-width: 50px;
   height: 50%;
   margin-top: auto;
-  border-top: 2px solid #000;
-  border-right: 2px solid #000;
+  border-top: 2px solid #d1d1d1; 
+  /* border-top: 2px solid #000; */
+  /* border-right: 2px solid #000; */
 }
 .blockWiner.tournamentBorder__RightNone {
   border-right: none;
 }
 .tournamentBlockWrapper__65-128 .blockWiner {
-  margin-top: 0;
+  margin-top: 2px;
   margin-bottom: auto;
   transform: scale(1, -1);
 }
@@ -152,11 +153,23 @@ button:focus-visible {
 .tournamentBorderWrapper_top_lv4_2,
 .tournamentBorderWrapper_top_lv4_3,
 .tournamentBorderWrapper_top_lv4_4,
+.tournamentBorderWrapper_top_lv4_5,
+.tournamentBorderWrapper_top_lv4_6,
+.tournamentBorderWrapper_top_lv4_7,
+.tournamentBorderWrapper_top_lv4_8,
+
+.tournamentBorderWrapper_bottom_lv5_1,
+.tournamentBorderWrapper_bottom_lv5_2,
+.tournamentBorderWrapper_bottom_lv5_3,
+.tournamentBorderWrapper_bottom_lv5_4,
+
 .tournamentBorderWrapper_lv3_1,
 .tournamentBorderWrapper_lv3_2,
+.tournamentBorderWrapper_lv3_3,
 
 .tournamentBorderWrapper_lv4_1,
-.tournamentBorderWrapper_lv4_2 {
+.tournamentBorderWrapper_lv4_2,
+.tournamentBorderWrapper_lv4_3 {
   display: flex;
   flex-direction: column;
   /* height: calc(var(--slotHeight) + 10px); */
@@ -177,8 +190,8 @@ button:focus-visible {
   margin: calc((var(--slotHeight)) * 2) 0;
 }
 .Round-4 .tournamentBorderWrapper {
-  height: calc((var(--slotHeight) + 10px) * 8);
-  margin: calc((var(--slotHeight) + 10px) * 4) 0;
+  height: calc((var(--slotHeight)) * 8);
+  margin: calc((var(--slotHeight)) * 4) 0;
 }
 .Round-5 .tournamentBorderWrapper {
   height: calc((var(--slotHeight) + 10px) * 16);
@@ -262,9 +275,35 @@ button:focus-visible {
   margin-top: 75px;
 }
 
+.Round-3 .tournamentBorderWrapper_lv3_3 {
+  height: 227px;
+  margin-bottom: 120px;
+  margin-top: 76px;
+}
+
 .Round-3 .tournamentBorderWrapper_top_lv3_1 {
   height: calc((var(--slotHeight) + 2px) * 1.5);
   margin-bottom: 59px;
+}
+
+.Round-4 .tournamentBorderWrapper_odd_bottom_lv4_1 {
+  margin-top: 207px;
+  margin-bottom: 120px;
+}
+
+.Round-4 .tournamentBorderWrapper_odd_bottom_lv4_2 {
+  margin-top: 207px;
+  margin-bottom: 73px;
+}
+
+.Round-4 .tournamentBorderWrapper_odd_bottom_lv4_3 {
+  margin-top: 238px;
+  margin-bottom: 188px;
+}
+
+.Round-4 .tournamentBorderWrapper_odd_bottom_lv4_4 {
+  margin-top: 238px;
+  margin-bottom: 188px;
 }
 
 .Round-4 .tournamentBorderWrapper_top_lv4_1 {
@@ -287,6 +326,30 @@ button:focus-visible {
   margin-bottom: 150px;
 }
 
+.Round-4 .tournamentBorderWrapper_top_lv4_5 {
+  height: 348px;
+  margin-bottom: 240px;
+  margin-top: 44px;
+}
+
+.Round-4 .tournamentBorderWrapper_top_lv4_6 {
+  height: 364px;
+  margin-bottom: 240px;
+  margin-top: 42px;
+}
+
+.Round-4 .tournamentBorderWrapper_top_lv4_7 {
+  height: 348px;
+  margin-bottom: 240px;
+  margin-top: 26px;
+}
+
+.Round-4 .tournamentBorderWrapper_top_lv4_8 {
+  height: 362px;
+  margin-bottom: 240px;
+  margin-top: 68px;
+}
+
 .Round-4 .tournamentBorderWrapper_lv4_1 {
   height: 446px;
   margin-bottom: 150px;
@@ -297,6 +360,36 @@ button:focus-visible {
   height: 452px;
   margin-bottom: 150px;
   margin-top: 238px;
+}
+
+.Round-4 .tournamentBorderWrapper_lv4_3 {
+  height: 475px;
+  margin-bottom: 247px;
+  margin-top: 199px;
+}
+
+.Round-5 .tournamentBorderWrapper_bottom_lv5_1 {
+  height: 623px;
+  margin-top: 158px;
+  margin-bottom: 60px;
+}
+
+.Round-5 .tournamentBorderWrapper_bottom_lv5_2 {
+  height: 632px;
+  margin-top: 210px;
+  margin-bottom: 60px;
+}
+
+.Round-5 .tournamentBorderWrapper_bottom_lv5_3 {
+  height: 655px;
+  margin-top: 211px;
+  margin-bottom: 201px;
+}
+
+.Round-5 .tournamentBorderWrapper_bottom_lv5_4 {
+  height: 662px;
+  margin-top: 260px;
+  margin-bottom: 201px;
 }
 
 .Round-2 .tournamentBorderWrapper_top {
@@ -313,7 +406,12 @@ button:focus-visible {
 .tournamentBorderWrapper_odd_top_lv3_1,
 .tournamentBorderWrapper_odd_top_lv3_2,
 .tournamentBorderWrapper_odd_top_lv3_3,
-.tournamentBorderWrapper_odd_top_lv3_4 {
+.tournamentBorderWrapper_odd_top_lv3_4,
+
+.tournamentBorderWrapper_odd_bottom_lv4_1,
+.tournamentBorderWrapper_odd_bottom_lv4_2,
+.tournamentBorderWrapper_odd_bottom_lv4_3,
+.tournamentBorderWrapper_odd_bottom_lv4_4 {
   display: flex;
   flex-direction: column;
   /* height: calc(var(--slotHeight) + 10px); */
@@ -335,7 +433,12 @@ button:focus-visible {
 .tournamentBorderWrapper_odd_top_lv3_1 > div,
 .tournamentBorderWrapper_odd_top_lv3_2 > div,
 .tournamentBorderWrapper_odd_top_lv3_3 > div,
-.tournamentBorderWrapper_odd_top_lv3_4 > div {
+.tournamentBorderWrapper_odd_top_lv3_4 > div,
+
+.tournamentBorderWrapper_odd_bottom_lv4_1 > div,
+.tournamentBorderWrapper_odd_bottom_lv4_2 > div,
+.tournamentBorderWrapper_odd_bottom_lv4_3 > div,
+.tournamentBorderWrapper_odd_bottom_lv4_4 > div {
   min-height: 10px;
   /* height: 100%; */
 }
@@ -351,13 +454,34 @@ button:focus-visible {
 .tournamentBorderWrapper_top_lv4_2 > div,
 .tournamentBorderWrapper_top_lv4_3 > div,
 .tournamentBorderWrapper_top_lv4_4 > div,
+.tournamentBorderWrapper_top_lv4_5 > div,
+.tournamentBorderWrapper_top_lv4_6 > div,
+.tournamentBorderWrapper_top_lv4_7 > div,
+.tournamentBorderWrapper_top_lv4_8 > div,
+
 .tournamentBorderWrapper_lv3_1 > div,
 .tournamentBorderWrapper_lv3_2 > div,
+.tournamentBorderWrapper_lv3_3 > div,
 
 .tournamentBorderWrapper_lv4_1 > div,
-.tournamentBorderWrapper_lv4_2 > div {
+.tournamentBorderWrapper_lv4_2 > div,
+.tournamentBorderWrapper_lv4_3 > div,
+
+.tournamentBorderWrapper_bottom_lv5_1 > div,
+.tournamentBorderWrapper_bottom_lv5_2 > div,
+.tournamentBorderWrapper_bottom_lv5_3 > div,
+.tournamentBorderWrapper_bottom_lv5_4 > div{
   min-height: 10px;
   height: 100%;
+}
+
+.tournamentBorder_top {
+  border-top: 2px solid #d1d1d1;
+  border-right: 2px solid #d1d1d1;
+}
+.tournamentBorder_buttom {
+  border-bottom: 2px solid #d1d1d1;
+  border-right: 2px solid #d1d1d1;
 }
 
 .tournamentBorder_top {
@@ -384,6 +508,7 @@ button:focus-visible {
 .tournamentBorder.line-win .content-points {
   color: blue;
 }
+
 .tournamentBorder_center::before {
   content: "";
   height: 2px;
@@ -416,7 +541,24 @@ button:focus-visible {
 }
 .hr-divider {
   border: none;
-  background-color: #000;
+  background-color: #d1d1d1;
+  /* background-color: #000; */
   height: 2px;
   width: 100%;
+}
+
+.outer-div {
+  position: relative; 
+  height: 200px; 
+  overflow: visible; 
+}
+
+.inner-div {
+  width: 150px;
+  position: absolute; 
+  transform: translate(-75px, -50%) scale(1, 1);
+  border-width: 5px;
+  z-index: 1; 
+  padding: 10px; 
+  
 }
