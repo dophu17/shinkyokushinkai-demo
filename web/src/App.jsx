@@ -10,6 +10,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import UserPage from './pages/UserPage';
 import NewsPage from './pages/NewsPage';
 import LoginPage from './pages/LoginPage';
+import LessonVideo from './pages/LessonVideo';
 
 import { BrowserRouter, useNavigate, useLocation, Routes, Route } from 'react-router-dom';
 
@@ -67,6 +68,12 @@ const NAVIGATION = [
     to: '/compete32'
   },
   {
+    segment: 'lesson-video',
+    title: 'Lesson video',
+    icon: <DescriptionIcon />,
+    to: '/lesson-video'
+  },
+  {
     segment: 'logout',
     title: 'Logout',
     icon: <LogoutIcon />,
@@ -102,6 +109,9 @@ function DemoPageContent({ pathname }) {
   }
   if (pathname === '/compete32') {
     return <CompetePage32 />;
+  }
+  if (pathname === '/lesson-video') {
+    return <LessonVideo />;
   }
   if (pathname === '/login') {
     return <LoginPage />;
